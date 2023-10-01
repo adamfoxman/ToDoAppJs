@@ -22,9 +22,10 @@
     "jsx": "react-jsx",
      "noImplicitAny": true,
     "noImplicitThis": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "baseUrl": "src"
   },
   "include": [
     "src"
-  ]
+, "src/app/App.tsx"  ]
 }
