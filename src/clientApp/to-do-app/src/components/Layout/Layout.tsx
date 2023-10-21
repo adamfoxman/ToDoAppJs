@@ -1,4 +1,4 @@
-import { Box, Toolbar } from "@mui/material";
+import { Box, Container, Paper, Toolbar } from "@mui/material";
 import { FunctionComponent, PropsWithChildren, useState } from "react";
 import AppBar from "components/AppBar/AppBar";
 import Drawer from "components/Drawer/Drawer";
@@ -38,7 +38,9 @@ const Layout: FunctionComponent<LayoutProps> = ({
             }}
          >
             <Toolbar />
-            {children}
+            <Container>
+               <Paper sx={{ padding: 2 }}>{children}</Paper>
+            </Container>
          </Box>
       </Box>
    );
