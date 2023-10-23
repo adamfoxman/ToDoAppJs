@@ -8,7 +8,6 @@ type FormikTextFieldProps<T> = TextFieldProps & {
 
 const FormikTextField = <T,>(props: FormikTextFieldProps<T>) => {
    const { formikPropertyName, formikProps, ...otherProps } = props;
-   console.log(props);
    return (
       <TextField
          {...otherProps}

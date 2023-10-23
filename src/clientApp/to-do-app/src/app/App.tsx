@@ -3,6 +3,8 @@ import { CssBaseline } from "@mui/material";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Layout from "components/Layout/Layout";
 import routes from "routes";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const theme = createTheme();
 
@@ -11,13 +13,15 @@ const App = () => {
       <ThemeProvider theme={theme}>
          <CssBaseline />
          <Router>
-            <Layout>
-               <Routes>
-                  {routes.map((route) => (
-                     <Route key={route.path} {...route} />
-                  ))}
-               </Routes>
-            </Layout>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+               <Layout>
+                  <Routes>
+                     {routes.map((route) => (
+                        <Route key={route.path} {...route} />
+                     ))}
+                  </Routes>
+               </Layout>
+            </LocalizationProvider>
          </Router>
       </ThemeProvider>
    );

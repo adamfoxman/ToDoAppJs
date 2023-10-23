@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { paths } from "config";
-import { Typography } from "@mui/material";
+import { Divider, Typography } from "@mui/material";
 import TodoForm from "components/ToDoForm/ToDoForm";
 
 const AddTodoPage = () => {
@@ -20,6 +20,7 @@ const AddTodoPage = () => {
    return (
       <>
          <Typography variant="h3">Add new task</Typography>
+         <Divider />
          <TodoForm onCreated={onCreated} />
       </>
    );

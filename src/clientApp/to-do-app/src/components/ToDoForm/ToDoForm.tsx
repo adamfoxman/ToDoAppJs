@@ -1,25 +1,39 @@
-import { FunctionComponent } from "react";
 import { Field, Form, Formik } from "formik";
-import { ToDoValues, useForm } from "./ToDoForm.utils";
-import { Button, Grid } from "@mui/material";
+import { ToDoValues, useForm, usePrioritySliderValues } from "./ToDoForm.utils";
+import { Box, Button, Grid, Slider, Typography } from "@mui/material";
 import FormikTextField from "components/FormikTextField";
+import FormikDateTimePicker from "components/FormikDateTimePicker";
+import { Priority } from "shared/types/enums";
 
 interface TodoFormProps {
    onCreated: () => void;
 }
 
-const TodoForm: FunctionComponent<TodoFormProps> = () => {
+const TodoForm = (props: TodoFormProps) => {
    const formProps = useForm();
+   const [
+      prioritySliderValues,
+      defaultSliderValue,
+      sliderValueFormat,
+      sliderGetAriaValueText,
+   ] = usePrioritySliderValues();
    return (
       <Formik
          initialValues={formProps.initialValues}
          onSubmit={formProps.onSubmit}
+         validationSchema={formProps.validationSchema}
       >
          {(props) => (
             <Form>
-               <Grid container justifyContent="center" spacing={4}>
-                  <Grid item>
-                     <FormikTextField<ToDoValues>
+               <Grid
+                  container
+                  justifyContent="center"
+                  spacing={2}
+                  sx={{ padding: 3 }}
+               >
+                  <Grid item xs={12} md={8} xl={6}>
+                     <Field
+                        component={FormikTextField<ToDoValues>}
                         fullWidth
                         id="title"
                         name="title"
@@ -28,15 +42,65 @@ const TodoForm: FunctionComponent<TodoFormProps> = () => {
                         formikPropertyName="title"
                      />
                   </Grid>
+                  <Box width="100%" />
+                  <Grid item xs={12} md={8} xl={6}>
+                     <Field
+                        component={FormikTextField<ToDoValues>}
+                        fullWidth
+                        id="description"
+                        name="description"
+                        label="Description"
+                        formikProps={props}
+                        formikPropertyName="description"
+                        multiline
+                        minRows={4}
+                        maxRows={10}
+                     />
+                  </Grid>
+                  <Box width="100%" />
+                  <Grid item xs={12} md={8} xl={6}>
+                     <FormikDateTimePicker<ToDoValues>
+                        inputProps={{
+                           id: "dueDate",
+                           name: "dueDate",
+                           fullWidth: true,
+                        }}
+                        label="Due date"
+                        formikProps={props}
+                        formikPropertyName="dueDate"
+                        disablePast
+                     />
+                  </Grid>
+                  <Box width="100%" />
+                  <Grid item xs={12} md={8} xl={6}>
+                     <Typography>Priority</Typography>
+                     <Slider
+                        defaultValue={defaultSliderValue}
+                        step={null}
+                        valueLabelFormat={sliderValueFormat}
+                        getAriaValueText={sliderGetAriaValueText}
+                        marks={prioritySliderValues}
+                        valueLabelDisplay="auto"
+                        max={Priority.VERY_HIGH}
+                        min={Priority.LOW}
+                        name="priority"
+                        id="priority"
+                        onChange={props.handleChange}
+                     />
+                  </Grid>
+                  <Box width="100%" />
+                  <Grid item xs={12} md={8} xl={6}>
+                     <Button
+                        color="primary"
+                        variant="contained"
+                        fullWidth
+                        type="submit"
+                     >
+                        Submit
+                     </Button>
+                  </Grid>
+                  <Box width="100%" />
                </Grid>
-               <Button
-                  color="primary"
-                  variant="contained"
-                  fullWidth
-                  type="submit"
-               >
-                  Submit
-               </Button>
             </Form>
          )}
       </Formik>

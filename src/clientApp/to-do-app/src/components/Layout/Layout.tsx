@@ -39,7 +39,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
          >
             <Toolbar />
             <Container>
-               <Paper sx={{ padding: 2 }}>{children}</Paper>
+               <Paper sx={{ padding: 2, marginTop: 2 }}>{children}</Paper>
             </Container>
          </Box>
       </Box>
