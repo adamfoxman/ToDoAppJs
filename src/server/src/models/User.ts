@@ -27,4 +27,4 @@ const UserSchema: Schema = new Schema({
   role: { type: String, enum: UserRoles, required: false },
 });
 
-export default model<IUser>('User', UserSchema);
+export const UserModel = model<IUser>('User', UserSchema);

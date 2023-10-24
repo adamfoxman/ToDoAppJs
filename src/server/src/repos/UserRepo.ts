@@ -1,6 +1,7 @@
-import { IUser } from '@src/models/User';
+import { IUser, UserModel } from '@src/models/User';
 import { getRandomInt } from '@src/util/misc';
 import orm from './MockOrm';
+import mongoose from 'mongoose';
 
 
 // **** Functions **** //
@@ -9,70 +10,43 @@ import orm from './MockOrm';
  * Get one user.
  */
 async function getOne(email: string): Promise<IUser | null> {
-  const db = await orm.openDb();
-  for (const user of db.users) {
-    if (user.email === email) {
-      return user;
-    }
-  }
-  return null;
+  return await UserModel.findOne({ email }).exec();
 }
 
 /**
  * See if a user with the given id exists.
  */
 async function persists(id: number): Promise<boolean> {
-  const db = await orm.openDb();
-  for (const user of db.users) {
-    if (user.id === id) {
-      return true;
-    }
-  }
-  return false;
+  return (await UserModel.exists({ id })) !== null ? true : false;
 }
 
 /**
  * Get all users.
  */
 async function getAll(): Promise<IUser[]> {
-  const db = await orm.openDb();
-  return db.users;
+  return UserModel.find().exec();
 }
 
 /**
  * Add one user.
  */
 async function add(user: IUser): Promise<void> {
-  const db = await orm.openDb();
-  user.id = getRandomInt();
-  db.users.push(user);
-  return orm.saveDb(db);
+  const newUser = new UserModel(user);
+  await newUser.save();
 }
 
 /**
  * Update a user.
  */
 async function update(user: IUser): Promise<void> {
-  const db = await orm.openDb();
-  for (let i = 0; i < db.users.length; i++) {
-    if (db.users[i].id === user.id) {
-      db.users[i] = user;
-      return orm.saveDb(db);
-    }
-  }
+  await UserModel.updateOne({ id: user.id }, user).exec();
 }
 
 /**
  * Delete one user.
  */
 async function delete_(id: number): Promise<void> {
-  const db = await orm.openDb();
-  for (let i = 0; i < db.users.length; i++) {
-    if (db.users[i].id === id) {
-      db.users.splice(i, 1);
-      return orm.saveDb(db);
-    }
-  }
+  await UserModel.findOneAndDelete({ id }).exec();
 }
 
 
