@@ -1,17 +1,11 @@
-// **** Variables **** //
-
-const INVALID_CONSTRUCTOR_PARAM = 'nameOrObj arg must a string or an ' + 
-  'object with the appropriate user keys.';
+import { Schema, model, Document } from 'mongoose';
 
 export enum UserRoles {
   Standard,
   Admin,
 }
 
-
-// **** Types **** //
-
-export interface IUser {
+export interface IUser extends Document {
   id: number;
   name: string;
   email: string;
@@ -26,60 +20,11 @@ export interface ISessionUser {
   role: IUser['role'];
 }
 
+const UserSchema: Schema = new Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  pwdHash: { type: String, required: false },
+  role: { type: String, enum: UserRoles, required: false },
+});
 
-// **** Functions **** //
-
-/**
- * Create new User.
- */
-function new_(
-  name?: string,
-  email?: string,
-  role?: UserRoles,
-  pwdHash?: string,
-  id?: number, // id last cause usually set by db
-): IUser {
-  return {
-    id: (id ?? -1),
-    name: (name ?? ''),
-    email: (email ?? ''),
-    role: (role ?? UserRoles.Standard),
-    pwdHash: (pwdHash ?? ''),
-  };
-}
-
-/**
- * Get user instance from object.
- */
-function from(param: object): IUser {
-  // Check is user
-  if (!isUser(param)) {
-    throw new Error(INVALID_CONSTRUCTOR_PARAM);
-  }
-  // Get user instance
-  const p = param as IUser;
-  return new_(p.name, p.email, p.role, p.pwdHash, p.id);
-}
-
-/**
- * See if the param meets criteria to be a user.
- */
-function isUser(arg: unknown): boolean {
-  return (
-    !!arg &&
-    typeof arg === 'object' &&
-    'id' in arg &&
-    'email' in arg &&
-    'name' in arg &&
-    'role' in arg
-  );
-}
-
-
-// **** Export default **** //
-
-export default {
-  new: new_,
-  from,
-  isUser,
-} as const;
+export default model<IUser>('User', UserSchema);
