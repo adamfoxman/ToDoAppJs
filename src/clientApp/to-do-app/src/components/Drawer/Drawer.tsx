@@ -12,6 +12,9 @@ import MuiDrawer, { DrawerProps as MuiDrawerProps } from "@mui/material/Drawer";
 import { FunctionComponent } from "react";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import { Link } from "react-router-dom";
+import { paths } from "config";
+import TaskOutlinedIcon from "@mui/icons-material/TaskOutlined";
 
 export interface DrawerProps extends MuiDrawerProps {
    open?: boolean;
@@ -63,11 +66,17 @@ const AppDrawer: FunctionComponent<DrawerProps> = (props) => {
          </Toolbar>
          <Divider />
          <List component="nav">
-            <ListItemButton>
+            <ListItemButton component={Link} to={paths.main}>
                <ListItemIcon>
                   <DashboardIcon />
                </ListItemIcon>
                <ListItemText primary="Main Page" />
+            </ListItemButton>
+            <ListItemButton component={Link} to={paths.todos}>
+               <ListItemIcon>
+                  <TaskOutlinedIcon />
+               </ListItemIcon>
+               <ListItemText primary="Todos" />
             </ListItemButton>
          </List>
       </Drawer>
