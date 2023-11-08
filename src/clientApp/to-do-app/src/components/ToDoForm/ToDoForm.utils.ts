@@ -1,3 +1,5 @@
+import { CreateTodoPayload } from "shared/services/api";
+import Api from "shared/services/api/api";
 import { Priority } from "shared/types/enums";
 import { Schema, date, mixed, object, string } from "yup";
 
@@ -33,15 +35,28 @@ export const useValidationSchema = (): Schema<ToDoValues> => {
    });
 };
 
-export const useOnSubmit = () => {
+export const useOnSubmit = (submitCallback: () => void) => {
    return async (values: ToDoValues) => {
-      console.log(values);
+      const api = new Api();
+      const { dueDate, ...rest } = values;
+      const payload: CreateTodoPayload = {
+         dueDate: values.dueDate === null ? undefined : values.dueDate,
+         ...rest,
+      };
+      const res = await api.addTodo(payload);
+      if (res.status === 201) {
+         console.log("Todo added successfully");
+         submitCallback();
+      } else {
+         //show error
+         console.log(res);
+      }
    };
 };
 
-export const useForm = () => {
+export const useForm = (submitCallback: () => void) => {
    const validationSchema = useValidationSchema();
-   const onSubmit = useOnSubmit();
+   const onSubmit = useOnSubmit(submitCallback);
    return { initialValues, validationSchema, onSubmit };
 };
 
