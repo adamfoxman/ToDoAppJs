@@ -10,7 +10,7 @@ interface TodoFormProps {
 }
 
 const TodoForm = (props: TodoFormProps) => {
-   const formProps = useForm();
+   const formProps = useForm(props.onCreated);
    const [
       prioritySliderValues,
       defaultSliderValue,
