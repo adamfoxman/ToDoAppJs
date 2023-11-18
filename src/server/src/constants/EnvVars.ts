@@ -25,4 +25,8 @@ export default {
     Secret: (process.env.JWT_SECRET ??  ''),
     Exp: (process.env.COOKIE_EXP ?? ''), // exp at the same time as the cookie
   },
+  Database: {
+    URI: (process.env.ATLAS_URI ?? ''),
+    Port: (process.env.DB_PORT ?? 0),
+  }
 } as const;

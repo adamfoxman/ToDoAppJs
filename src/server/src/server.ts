@@ -8,6 +8,7 @@ import path from 'path';
 import helmet from 'helmet';
 import express, { Request, Response, NextFunction } from 'express';
 import logger from 'jet-logger';
+import mongoose from 'mongoose';
 
 import 'express-async-errors';
 
@@ -24,6 +25,12 @@ import { setupSwagger } from './swagger';
 // **** Variables **** //
 
 const app = express();
+
+// **** Database **** //
+
+// Connect to database
+
+mongoose.connect(EnvVars.Database.URI);
 
 // **** Setup **** //
 

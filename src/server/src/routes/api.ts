@@ -40,14 +40,12 @@ userRouter.get(Paths.Users.Get, UserRoutes.getAll);
 // Add one user
 userRouter.post(
   Paths.Users.Add,
-  validate(['user', User.isUser]),
   UserRoutes.add,
 );
 
 // Update one user
 userRouter.put(
   Paths.Users.Update,
-  validate(['user', User.isUser]),
   UserRoutes.update,
 );
 
@@ -63,6 +61,8 @@ apiRouter.use(Paths.Users.Base, adminMw, userRouter);
 
 // **** Setup TaskRouter **** //
 const taskRouter = Router();
+
+taskRouter.get(Paths.Tasks.Get, TaskRoutes.getAll);
 
 /**
  * @swagger

@@ -1,8 +1,8 @@
 import { Schema, model, Document } from 'mongoose';
 
 export enum UserRoles {
-  Standard,
-  Admin,
+  Standard = 'STANDARD',
+  Admin = 'ADMIN',
 }
 
 export interface IUser extends Document {
@@ -17,7 +17,7 @@ export interface ISessionUser {
   id: number;
   email: string;
   name: string;
-  role: IUser['role'];
+  role: UserRoles;
 }
 
 const UserSchema: Schema = new Schema({
@@ -27,4 +27,12 @@ const UserSchema: Schema = new Schema({
   role: { type: String, enum: UserRoles, required: false },
 });
 
-export const UserModel = model<IUser>('User', UserSchema);
+UserSchema.virtual('id').get(function (this: IUser) : string {
+  return this._id;
+});
+
+UserSchema.virtual('url').get(function (this: IUser) : string {
+  return `/users/${this._id}`;
+});
+
+export default model<IUser>('User', UserSchema);

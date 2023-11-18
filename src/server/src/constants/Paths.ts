@@ -18,6 +18,7 @@ export default {
   },
   Tasks: {
     Base: '/tasks',
+    Get: '/all',
     Add: '/add',
     Update: '/update',
     Delete: '/delete/:id',
