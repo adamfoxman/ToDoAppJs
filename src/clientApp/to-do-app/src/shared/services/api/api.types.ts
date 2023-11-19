@@ -6,3 +6,11 @@ export interface CreateTodoPayload {
    dueDate?: Date;
    priority: Priority;
 }
+
+export interface RegisterPayload {
+   email: string;
+   name: string;
+   login: string;
+   password: string;
+   surname: string;
+}

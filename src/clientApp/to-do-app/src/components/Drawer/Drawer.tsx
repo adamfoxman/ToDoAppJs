@@ -15,6 +15,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import { Link } from "react-router-dom";
 import { paths } from "config";
 import TaskOutlinedIcon from "@mui/icons-material/TaskOutlined";
+import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 
 export interface DrawerProps extends MuiDrawerProps {
    open?: boolean;
@@ -77,6 +78,12 @@ const AppDrawer: FunctionComponent<DrawerProps> = (props) => {
                   <TaskOutlinedIcon />
                </ListItemIcon>
                <ListItemText primary="Todos" />
+            </ListItemButton>
+            <ListItemButton component={Link} to={paths.register}>
+               <ListItemIcon>
+                  <PersonOutlinedIcon />
+               </ListItemIcon>
+               <ListItemText primary="Sign up" />
             </ListItemButton>
          </List>
       </Drawer>
