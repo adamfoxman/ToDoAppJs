@@ -20,6 +20,21 @@ export interface ISessionUser {
   role: UserRoles;
 }
 
+export interface INewUser {
+  name: string;
+  email: string;
+  password: string;
+  role?: UserRoles;
+}
+
+export interface IUpdateUser {
+  id: string;
+  name?: string;
+  email?: string;
+  password?: string;
+  role?: UserRoles;
+}
+
 const UserSchema: Schema = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },

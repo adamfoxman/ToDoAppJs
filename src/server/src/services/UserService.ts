@@ -1,5 +1,5 @@
 import UserRepo from '@src/repos/UserRepo';
-import { IUser } from '@src/models/User';
+import { INewUser, IUser, IUpdateUser } from '@src/models/User';
 import { RouteError } from '@src/other/classes';
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 
@@ -21,14 +21,14 @@ function getAll(): Promise<IUser[]> {
 /**
  * Add one user.
  */
-function addOne(user: IUser): Promise<void> {
+function addOne(user: INewUser): Promise<void> {
   return UserRepo.add(user);
 }
 
 /**
  * Update one user.
  */
-async function updateOne(user: IUser): Promise<void> {
+async function updateOne(user: IUpdateUser): Promise<void> {
   const persists = await UserRepo.persists(user.id);
   if (!persists) {
     throw new RouteError(
@@ -43,7 +43,7 @@ async function updateOne(user: IUser): Promise<void> {
 /**
  * Delete a user by their id.
  */
-async function _delete(id: number): Promise<void> {
+async function _delete(id: string): Promise<void> {
   const persists = await UserRepo.persists(id);
   if (!persists) {
     throw new RouteError(
