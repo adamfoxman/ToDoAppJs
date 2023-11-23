@@ -1,19 +1,13 @@
-import { HTMLAttributes } from "react";
-import { Container } from "./Loader.style";
-import { CircularProgress, Typography } from "@mui/material";
+import { Backdrop, CircularProgress } from "@mui/material";
 
-export interface LoaderProps extends HTMLAttributes<HTMLDivElement> {
-   label?: string;
+export interface LoaderProps {
    size?: number;
 }
 
-const Loader = ({ label, size = 100, ...props }: LoaderProps) => (
-   <Container {...props}>
+const Loader = ({ size = 100 }: LoaderProps) => (
+   <Backdrop sx={{ color: "#fff", zIndex: 9999 }} open={true}>
       <CircularProgress size={size} />
-      <Typography variant="subtitle1" color="textPrimary">
-         {label}
-      </Typography>
-   </Container>
+   </Backdrop>
 );
 
 export default Loader;

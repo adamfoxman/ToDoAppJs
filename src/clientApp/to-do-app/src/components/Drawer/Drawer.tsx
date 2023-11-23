@@ -73,17 +73,11 @@ const AppDrawer: FunctionComponent<DrawerProps> = (props) => {
                </ListItemIcon>
                <ListItemText primary="Main Page" />
             </ListItemButton>
-            <ListItemButton component={Link} to={paths.todos}>
+            <ListItemButton component={Link} to={paths.todos.main}>
                <ListItemIcon>
                   <TaskOutlinedIcon />
                </ListItemIcon>
                <ListItemText primary="Todos" />
-            </ListItemButton>
-            <ListItemButton component={Link} to={paths.register}>
-               <ListItemIcon>
-                  <PersonOutlinedIcon />
-               </ListItemIcon>
-               <ListItemText primary="Sign up" />
             </ListItemButton>
          </List>
       </Drawer>

@@ -1,12 +1,11 @@
-import { RegisterPayload } from "shared/services/api";
+import { HttpStatusCode } from "axios";
+import Api, { RegisterPayload } from "shared/services/api";
 import { object, string, Schema, ref } from "yup";
 
 export interface RegisterFormValues {
    login: string;
    password: string;
    passwordConfirm: string;
-   name: string;
-   surname: string;
    email: string;
 }
 
@@ -14,8 +13,6 @@ export const initialValues: RegisterFormValues = {
    login: "",
    password: "",
    passwordConfirm: "",
-   name: "",
-   surname: "",
    email: "",
 };
 
@@ -30,10 +27,8 @@ export const useValidationSchema = (): Schema<RegisterFormValues> => {
             "The password must contain an uppercase letter, a lowercase letter, a number and a special character"
          ),
       passwordConfirm: string()
-         .required("Pole wymagane")
+         .required()
          .oneOf([ref("password")], "Passwords must match"),
-      name: string().required(),
-      surname: string().required(),
       email: string().required().email(),
    });
 };
@@ -41,14 +36,17 @@ export const useValidationSchema = (): Schema<RegisterFormValues> => {
 export const useOnSubmit = () => {
    return async (values: RegisterFormValues) => {
       var user: RegisterPayload = {
-         name: values.name,
-         surname: values.surname,
          email: values.email,
          password: values.password,
          login: values.login,
       };
-      await new Promise((r) => setTimeout(r, 5000));
-      console.log(user);
+      const api = new Api();
+      const response = await api.registerUser(user);
+      if (response.status === HttpStatusCode.Created) {
+         alert("User registered successfully");
+      } else {
+         alert("User registration failed");
+      }
    };
 };
 

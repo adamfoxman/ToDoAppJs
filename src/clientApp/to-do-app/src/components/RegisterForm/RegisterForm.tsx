@@ -72,29 +72,7 @@ const RegisterForm = () => {
                         fullWidth
                      />
                   </Grid>
-                  <Grid item xs={12} md={6}>
-                     <Field
-                        component={FormikTextField<RegisterFormValues>}
-                        id="name"
-                        name="name"
-                        label="First name"
-                        formikProps={props}
-                        formikPropertyName="name"
-                        fullWidth
-                     />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                     <Field
-                        component={FormikTextField<RegisterFormValues>}
-                        id="surname"
-                        name="surname"
-                        label="Surname"
-                        formikProps={props}
-                        formikPropertyName="surname"
-                        fullWidth
-                     />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} md={5}>
                      <Button
                         type="submit"
                         variant="contained"
@@ -104,8 +82,6 @@ const RegisterForm = () => {
                      >
                         Sign up
                      </Button>
-                  </Grid>
-                  <Grid item xs={12} md={7}>
                      <Button
                         type="button"
                         variant="text"

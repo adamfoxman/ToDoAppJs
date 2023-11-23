@@ -11,7 +11,11 @@ const ToDosPage = () => {
                <Typography variant="h3">Lista zadań</Typography>
             </Grid>
             <Grid item xs={1}>
-               <IconButton size="large" component={Link} to={paths.addTodo}>
+               <IconButton
+                  size="large"
+                  component={Link}
+                  to={paths.todos.addTodo}
+               >
                   <AddCircleOutlineOutlinedIcon fontSize="inherit" />
                </IconButton>
             </Grid>
