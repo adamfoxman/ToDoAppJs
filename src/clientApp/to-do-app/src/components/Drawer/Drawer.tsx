@@ -15,7 +15,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import { Link } from "react-router-dom";
 import { paths } from "config";
 import TaskOutlinedIcon from "@mui/icons-material/TaskOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
+import { useAuth } from "shared/hooks/useAuth";
 
 export interface DrawerProps extends MuiDrawerProps {
    open?: boolean;
@@ -51,6 +51,7 @@ const Drawer = styled(MuiDrawer, {
 
 const AppDrawer: FunctionComponent<DrawerProps> = (props) => {
    const { toggleDrawer } = props;
+   const auth = useAuth();
    return (
       <Drawer variant="permanent" {...props}>
          <Toolbar
@@ -73,12 +74,14 @@ const AppDrawer: FunctionComponent<DrawerProps> = (props) => {
                </ListItemIcon>
                <ListItemText primary="Main Page" />
             </ListItemButton>
-            <ListItemButton component={Link} to={paths.todos.main}>
-               <ListItemIcon>
-                  <TaskOutlinedIcon />
-               </ListItemIcon>
-               <ListItemText primary="Todos" />
-            </ListItemButton>
+            {auth.isAuthenticated && (
+               <ListItemButton component={Link} to={paths.todos.main}>
+                  <ListItemIcon>
+                     <TaskOutlinedIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Todos" />
+               </ListItemButton>
+            )}
          </List>
       </Drawer>
    );
