@@ -1,7 +1,13 @@
 const paths = {
    main: "/",
-   todos: "/todos",
-   addTodo: "/todos/add",
+   todos: {
+      main: "/todos",
+      addTodo: "/todos/add",
+   },
+   auth: {
+      register: "/register",
+      login: "/login",
+   },
 };
 
 export default paths;

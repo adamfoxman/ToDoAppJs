@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
 import config from "config";
 import Auth from "../Auth";
-import { CreateTodoPayload } from "./api.types";
+import { CreateTodoPayload, RegisterPayload } from "./api.types";
 
 class Api {
    protected api: AxiosInstance = axios.create({ baseURL: config.apiUrl });
@@ -21,6 +21,14 @@ class Api {
       const response = await this.api.post<CreateTodoPayload>(
          "/api/tasks/add",
          task
+      );
+      return response;
+   }
+
+   public async registerUser(user: RegisterPayload) {
+      const response = await this.api.post<RegisterPayload>(
+         "/api/users/add",
+         user
       );
       return response;
    }

@@ -14,6 +14,7 @@ const FormikTextField = <T,>(props: FormikTextFieldProps<T>) => {
          value={formikProps.values[formikPropertyName]}
          onChange={formikProps.handleChange}
          onBlur={formikProps.handleBlur}
+         disabled={formikProps.isSubmitting}
          error={
             formikProps.touched[formikPropertyName] &&
             Boolean(formikProps.errors[formikPropertyName])

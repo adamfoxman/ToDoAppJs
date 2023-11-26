@@ -2,7 +2,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Layout from "components/Layout/Layout";
-import routes from "routes";
+import routes from "pages/routes";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 

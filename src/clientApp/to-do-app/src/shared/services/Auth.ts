@@ -17,10 +17,9 @@ class Auth {
          const data = jwtDecode<tokenData>(token);
 
          const user: SignedIdUser = {
-            name: data.given_name,
-            surname: data.family_name,
             email: data.email,
             login: data.unique_name,
+            role: data.role,
          };
 
          return user;

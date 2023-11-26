@@ -8,10 +8,14 @@ const ToDosPage = () => {
       <>
          <Grid container justifyContent="space-beetwen">
             <Grid item xs={11}>
-               <Typography variant="h3">Lista zadań</Typography>
+               <Typography variant="h3">Your tasks</Typography>
             </Grid>
             <Grid item xs={1}>
-               <IconButton size="large" component={Link} to={paths.addTodo}>
+               <IconButton
+                  size="large"
+                  component={Link}
+                  to={paths.todos.addTodo}
+               >
                   <AddCircleOutlineOutlinedIcon fontSize="inherit" />
                </IconButton>
             </Grid>
