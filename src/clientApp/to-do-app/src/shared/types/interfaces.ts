@@ -1,15 +1,14 @@
 import { JwtPayload } from "jwt-decode";
 
+//TODO change it
 export interface tokenData extends JwtPayload {
    unique_name: string;
+   role: string;
    email: string;
-   given_name: string;
-   family_name: string;
 }
 
 export interface SignedIdUser {
-   name: string;
-   surname: string;
    email: string;
    login: string;
+   role: string;
 }

@@ -14,7 +14,7 @@ const AddTodoPage = () => {
 
    useEffect(() => {
       if (created) {
-         navigate(paths.todos);
+         navigate(paths.todos.main);
       }
    }, [created, navigate]);
    return (

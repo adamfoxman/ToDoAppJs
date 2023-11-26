@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material";
 
 const MainPage = () => {
-   return <Typography variant="h1">Witaj na stronie głównej!</Typography>;
+   return <Typography variant="h1">Welcome in ToDos Page</Typography>;
 };
 
 export default MainPage;

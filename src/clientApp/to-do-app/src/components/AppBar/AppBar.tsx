@@ -1,7 +1,10 @@
-import { IconButton, Toolbar, Typography, styled } from "@mui/material";
+import { Button, IconButton, Toolbar, Typography, styled } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { FunctionComponent } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
+import { useNavigate } from "react-router-dom";
+import { paths } from "config";
+import { useAuth } from "shared/hooks/useAuth";
 
 interface AppBarProps extends MuiAppBarProps {
    open?: boolean;
@@ -29,6 +32,14 @@ const AppBar = styled(MuiAppBar, {
 
 const ApplicationAppBar: FunctionComponent<AppBarProps> = (props) => {
    const { open, toggleDrawer } = props;
+   const navigate = useNavigate();
+
+   const routeChange = (path: string) => {
+      navigate(path);
+   };
+
+   const { isAuthenticated, logout, tokenData } = useAuth();
+
    return (
       <AppBar position="absolute" {...props}>
          <Toolbar
@@ -57,6 +68,40 @@ const ApplicationAppBar: FunctionComponent<AppBarProps> = (props) => {
             >
                ToDos
             </Typography>
+            {isAuthenticated ? (
+               <>
+                  <Typography
+                     variant="subtitle1"
+                     sx={{ textTransform: "uppercase" }}
+                  >
+                     Hello {tokenData?.login}
+                  </Typography>
+                  <Button onClick={logout} color="inherit">
+                     Log out
+                  </Button>
+               </>
+            ) : (
+               <>
+                  <Button
+                     onClick={() => routeChange(paths.auth.login)}
+                     color="inherit"
+                  >
+                     Sign In
+                  </Button>
+                  <Typography
+                     variant="subtitle1"
+                     sx={{ textTransform: "uppercase" }}
+                  >
+                     or
+                  </Typography>
+                  <Button
+                     onClick={() => routeChange(paths.auth.register)}
+                     color="inherit"
+                  >
+                     Sign Up
+                  </Button>
+               </>
+            )}
          </Toolbar>
       </AppBar>
    );
