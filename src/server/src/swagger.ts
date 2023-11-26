@@ -14,6 +14,20 @@ const options = {
         url: 'https://spdx.org/licenses/MIT.html',
       },
     },
+    tags: [
+      {
+        name: 'Auth',
+        description: 'Authentication endpoints',
+      },
+      {
+        name: 'Users',
+        description: 'Users endpoints',
+      },
+      {
+        name: 'Tasks',
+        description: 'Tasks endpoints',
+      },
+    ],
     servers: [
       {
         url: 'http://localhost:3000',

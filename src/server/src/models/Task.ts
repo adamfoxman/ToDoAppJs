@@ -9,7 +9,6 @@ enum Priority {
 }
 
 export interface ITask extends Document {
-  id: number;
   owner: string;
   title: string;
   description?: string;

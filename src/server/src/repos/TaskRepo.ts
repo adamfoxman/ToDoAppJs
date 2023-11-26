@@ -8,7 +8,7 @@ async function getAll(): Promise<ITask[]> {
   return TaskModel.find().exec();
 }
 
-async function persists(id: number): Promise<boolean> {
+async function persists(id: string): Promise<boolean> {
   return (await TaskModel.exists({ id })) !== null ? true : false;
 }
 
@@ -21,7 +21,7 @@ async function update(task: ITask): Promise<void> {
   await TaskModel.updateOne({ id: task._id }, task).exec();
 }
 
-async function delete_(id: number): Promise<void> {
+async function delete_(id: string): Promise<void> {
   await TaskModel.findOneAndDelete({ id }).exec();
 }
 

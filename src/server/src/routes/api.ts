@@ -28,6 +28,8 @@ const authRouter = Router();
  *   post:
  *     summary: Login user.
  *     description: Login user with email and password.
+ *     tags:
+ *     - Auth
  *     requestBody:
  *       required: true
  *       content:
@@ -63,6 +65,8 @@ authRouter.post(
  *   get:
  *     summary: Logout user.
  *     description: Logout currently logged-in user.
+ *     tags:
+ *     - Auth
  *     responses:
  *       200:
  *         description: User logged out successfully.
@@ -84,6 +88,8 @@ const userRouter = Router();
  *   get:
  *     summary: Get all users.
  *     description: Get all registered users.
+ *     tags:
+ *     - Users
  *     responses:
  *       200:
  *         description: List of all users.
@@ -120,6 +126,8 @@ userRouter.get(Paths.Users.Get, UserRoutes.getAll);
  *   post:
  *     summary: Add a user.
  *     description: Add a new user.
+ *     tags:
+ *     - Users
  *     requestBody:
  *       required: true
  *       content:
@@ -159,6 +167,8 @@ userRouter.post(Paths.Users.Add, UserRoutes.add);
  *   put:
  *     summary: Update a user.
  *     description: Update an existing user.
+ *     tags:
+ *     - Users
  *     requestBody:
  *       required: true
  *       content:
@@ -202,6 +212,8 @@ userRouter.put(Paths.Users.Update, UserRoutes.update);
  *   delete:
  *     summary: Delete a user.
  *     description: Delete an existing user.
+ *     tags:
+ *     - Users
  *     parameters:
  *       - in: path
  *         name: id
@@ -236,6 +248,8 @@ const taskRouter = Router();
  *   get:
  *     summary: Get all tasks.
  *     description: Get all tasks.
+ *     tags:
+ *     - Tasks
  *     responses:
  *       200:
  *         description: All tasks.
@@ -288,6 +302,8 @@ taskRouter.get(Paths.Tasks.Get, TaskRoutes.getAll);
  *   post:
  *     summary: Add a task.
  *     description: Add a new task.
+ *     tags:
+ *     - Tasks
  *     requestBody:
  *       required: true
  *       content:
@@ -295,17 +311,123 @@ taskRouter.get(Paths.Tasks.Get, TaskRoutes.getAll);
  *           schema:
  *             type: object
  *             properties:
+ *               owner:
+ *                 type: string
+ *                 description: Task owner.
+ *                 example: 5f9a2b9a9d6b2b1b1c9d9c9d
  *               title:
  *                 type: string
  *                 description: Task title.
  *                 example: Make a coffee.
+ *               description:
+ *                 type: string
+ *                 description: Task description.
+ *                 example: Make a coffee with milk.
+ *               done:
+ *                 type: boolean
+ *                 description: Task done.
+ *                 example: false
+ *               dueDate:
+ *                 type: string
+ *                 description: Task due date.
+ *                 example: 2020-10-30T00:00:00.000Z
+ *               priority:
+ *                 type: string
+ *                 description: Task priority.
+ *                 example: NONE
  *     responses:
  *       201:
  *         description: Task added successfully.
  *       400:
  *         description: Invalid task data.
  */
-taskRouter.post(Paths.Tasks.Add, validate(['title']), TaskRoutes.add);
+taskRouter.post(
+  Paths.Tasks.Add,
+  validate(['owner', 'string', 'body']),
+  TaskRoutes.add);
+
+/**
+ * Update a task.
+ *
+ * @swagger
+ * /api/tasks/update:
+ *   put:
+ *     summary: Update a task.
+ *     description: Update an existing task.
+ *     tags:
+ *     - Tasks
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: number
+ *                 description: Task ID.
+ *                 example: 1
+ *               owner:
+ *                 type: string
+ *                 description: Task owner.
+ *                 example: 5f9a2b9a9d6b2b1b1c9d9c9d
+ *               title:
+ *                 type: string
+ *                 description: Task title.
+ *                 example: Make a coffee.
+ *               description:
+ *                 type: string
+ *                 description: Task description.
+ *                 example: Make a coffee with milk.
+ *               done:
+ *                 type: boolean
+ *                 description: Task done.
+ *                 example: false
+ *               dueDate:
+ *                 type: string
+ *                 description: Task due date.
+ *                 example: 2020-10-30T00:00:00.000Z
+ *               priority:
+ *                 type: string
+ *                 description: Task priority.
+ *                 example: NONE
+ *     responses:
+ *       200:
+ *         description: Task updated successfully.
+ *       400:
+ *         description: Invalid task data.
+ */
+taskRouter.put(Paths.Tasks.Update, TaskRoutes.update);
+
+/**
+ * Delete a task.
+ *
+ * @swagger
+ * /api/tasks/delete/{id}:
+ *   delete:
+ *     summary: Delete a task.
+ *     description: Delete an existing task.
+ *     tags:
+ *     - Tasks
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Task ID.
+ *         schema:
+ *           type: string
+ *           example: 1
+ *     responses:
+ *       200:
+ *         description: Task deleted successfully.
+ *       400:
+ *         description: Invalid task data.
+ */
+taskRouter.delete(
+  Paths.Tasks.Delete,
+  validate(['id', 'string', 'params']),
+  TaskRoutes.delete,
+);
 
 // Add TaskRouter
 apiRouter.use(Paths.Tasks.Base, taskRouter);

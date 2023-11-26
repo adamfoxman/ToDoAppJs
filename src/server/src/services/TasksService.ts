@@ -18,10 +18,19 @@ async function updateOne(task: ITask) {
   await TaskRepo.update(task);
 }
 
-
+async function _delete(id: string) {
+  const persists = await TaskRepo.persists(id);
+  if (!persists) {
+    throw new Error('Task not found');
+  }
+  
+  await TaskRepo.delete(id);
+  
+}
 
 export default {
   getAll,
   addTask: addOne,
-  updateOne,
+  updateTask: updateOne,
+  delete: _delete,
 } as const;
