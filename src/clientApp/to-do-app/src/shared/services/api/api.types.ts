@@ -9,6 +9,6 @@ export interface CreateTodoPayload {
 
 export interface RegisterPayload {
    email: string;
-   login: string;
+   name: string;
    password: string;
 }

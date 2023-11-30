@@ -23,11 +23,11 @@ const RegisterForm = () => {
                   <Grid item xs={12} md={6}>
                      <Field
                         component={FormikTextField<RegisterFormValues>}
-                        id="login"
-                        name="login"
-                        label="Username"
+                        id="name"
+                        name="name"
+                        label="Name"
                         formikProps={props}
-                        formikPropertyName="login"
+                        formikPropertyName="name"
                         fullWidth
                      />
                   </Grid>

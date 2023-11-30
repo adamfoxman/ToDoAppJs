@@ -1,16 +1,19 @@
 import { HttpStatusCode } from "axios";
 import Api, { RegisterPayload } from "shared/services/api";
 import { object, string, Schema, ref } from "yup";
+import { useAlertContext } from "shared/contexts/AlertContext";
+import { useNavigate } from "react-router-dom";
+import { paths } from "config";
 
 export interface RegisterFormValues {
-   login: string;
+   name: string;
    password: string;
    passwordConfirm: string;
    email: string;
 }
 
 export const initialValues: RegisterFormValues = {
-   login: "",
+   name: "",
    password: "",
    passwordConfirm: "",
    email: "",
@@ -18,7 +21,7 @@ export const initialValues: RegisterFormValues = {
 
 export const useValidationSchema = (): Schema<RegisterFormValues> => {
    return object().shape({
-      login: string().required(),
+      name: string().required(),
       password: string()
          .required()
          .min(8)
@@ -34,18 +37,31 @@ export const useValidationSchema = (): Schema<RegisterFormValues> => {
 };
 
 export const useOnSubmit = () => {
+   const showMessage = useAlertContext();
+   const navigate = useNavigate();
    return async (values: RegisterFormValues) => {
       var user: RegisterPayload = {
          email: values.email,
          password: values.password,
-         login: values.login,
+         name: values.name,
       };
       const api = new Api();
-      const response = await api.registerUser(user);
-      if (response.status === HttpStatusCode.Created) {
-         alert("User registered successfully");
-      } else {
-         alert("User registration failed");
+      try {
+         const response = await api.registerUser(user);
+         if (response.status === HttpStatusCode.Created) {
+            showMessage(
+               "You have successfully created an account. Now you can sign in",
+               "success"
+            );
+            navigate(paths.auth.login);
+         } else {
+            showMessage(
+               `Registration error: ${response.data} ${response.statusText}`,
+               "error"
+            );
+         }
+      } catch {
+         showMessage("Registration error. Please try again later", "error");
       }
    };
 };
