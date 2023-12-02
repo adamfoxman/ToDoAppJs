@@ -1,13 +1,17 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
 import config from "config";
 import Auth from "../Auth";
-import { CreateTodoPayload, RegisterPayload } from "./api.types";
+import { CreateTodoPayload, LoginPayload, RegisterPayload } from "./api.types";
 
 class Api {
    protected api: AxiosInstance = axios.create({ baseURL: config.apiUrl });
 
    constructor() {
       this.api.interceptors.request.use(this.authenticate);
+      this.api.interceptors.request.use((config) => {
+         config.withCredentials = true;
+         return config;
+      });
    }
 
    private authenticate(config: InternalAxiosRequestConfig) {
@@ -28,6 +32,14 @@ class Api {
    public async registerUser(user: RegisterPayload) {
       const response = await this.api.post<RegisterPayload>(
          "/api/users/add",
+         user
+      );
+      return response;
+   }
+
+   public async login(user: LoginPayload) {
+      const response = await this.api.post<LoginPayload>(
+         "/api/auth/login",
          user
       );
       return response;

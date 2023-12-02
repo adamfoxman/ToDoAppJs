@@ -1,6 +1,6 @@
 const config = {
    apiUrl: process.env.REACT_APP_API_URL,
-   storageTokenKey: "authToken",
+   storageTokenKey: "ExpressGeneratorTs",
 };
 
 export default config;

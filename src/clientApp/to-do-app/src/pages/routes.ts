@@ -10,6 +10,7 @@ const routes: ModuleRoute[] = [
    {
       path: paths.main,
       Component: () => MainPage(),
+      public: true,
    },
    {
       path: paths.todos.main,
@@ -22,10 +23,12 @@ const routes: ModuleRoute[] = [
    {
       path: paths.auth.register,
       Component: () => RegisterPage(),
+      public: true,
    },
    {
       path: paths.auth.login,
       Component: () => LoginPage(),
+      public: true,
    },
 ];
 

@@ -1,4 +1,7 @@
-import Auth from "shared/services/Auth";
+import { AxiosError } from "axios";
+import { FormikHelpers } from "formik";
+import { useAlertContext } from "shared/contexts/AlertContext";
+import Api from "shared/services/api";
 import { Schema, object, string } from "yup";
 
 export interface LoginFormValues {
@@ -19,18 +22,27 @@ export const useValidationSchema = (): Schema<LoginFormValues> => {
 };
 
 export const useOnSubmit = (loginCallback: () => void) => {
-   return async (values: LoginFormValues) => {
-      alert(JSON.stringify(values, null, 2));
-      //TODO temp code below
-      //{
-      //   "unique_name": "john_doe_11",
-      //   "role": "Standard",
-      //   "email": "john.doe@gmail.com"
-      // }
-      Auth.setToken(
-         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImpvaG5fZG9lXzExIiwicm9sZSI6IlN0YW5kYXJkIiwiZW1haWwiOiJqb2huLmRvZUBnbWFpbC5jb20ifQ.maznwxSTKONpwpz6yq46vOIHPtEqSG_tjxYWhhm7niM"
-      );
-      loginCallback();
+   const showMessage = useAlertContext();
+   return async (
+      values: LoginFormValues,
+      { resetForm }: FormikHelpers<LoginFormValues>
+   ) => {
+      const api = new Api();
+      const { login, password } = values;
+      try {
+         const response = await api.login({
+            email: login,
+            password: password,
+         });
+         console.log("res", response);
+         loginCallback();
+      } catch (error) {
+         const axiosError = error as AxiosError;
+         if (axiosError.response?.status === 401) {
+            showMessage("Invalid credentials", "warning");
+            resetForm();
+         }
+      }
    };
 };
 
