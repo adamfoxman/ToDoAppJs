@@ -3,7 +3,6 @@ import { ToDoValues, useForm, usePrioritySliderValues } from "./ToDoForm.utils";
 import { Box, Button, Grid, Slider, Typography } from "@mui/material";
 import FormikTextField from "components/FormikTextField";
 import FormikDateTimePicker from "components/FormikDateTimePicker";
-import { Priority } from "shared/types/enums";
 
 interface TodoFormProps {
    onCreated: () => void;
@@ -16,6 +15,8 @@ const TodoForm = (props: TodoFormProps) => {
       defaultSliderValue,
       sliderValueFormat,
       sliderGetAriaValueText,
+      minValue,
+      maxValue,
    ] = usePrioritySliderValues();
    return (
       <Formik
@@ -81,8 +82,8 @@ const TodoForm = (props: TodoFormProps) => {
                         getAriaValueText={sliderGetAriaValueText}
                         marks={prioritySliderValues}
                         valueLabelDisplay="auto"
-                        max={Priority.VERY_HIGH}
-                        min={Priority.LOW}
+                        max={maxValue}
+                        min={minValue}
                         name="priority"
                         id="priority"
                         onChange={props.handleChange}

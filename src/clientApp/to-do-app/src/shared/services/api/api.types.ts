@@ -5,6 +5,8 @@ export interface CreateTodoPayload {
    description: string;
    dueDate?: Date;
    priority: Priority;
+   owner: string;
+   done: boolean;
 }
 
 export interface RegisterPayload {
