@@ -25,7 +25,7 @@ async function login(req: IReq<ILoginReq>, res: IRes) {
   // Setup Admin Cookie
   await SessionUtil.addSessionData(res, {
     id: user.id,
-    email: user.name,
+    email: user.email,
     name: user.name,
     role: user.role,
   });
