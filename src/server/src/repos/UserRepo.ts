@@ -11,6 +11,10 @@ async function persists(id: string): Promise<boolean> {
   return (await UserModel.exists({ id })) !== null ? true : false;
 }
 
+async function persistsEmail(email:string) {
+  return (await UserModel.exists({ email })) !== null ? true : false;
+}
+
 async function getAll(): Promise<IUser[]> {
   return await UserModel.find().exec();
 }
@@ -43,6 +47,7 @@ async function delete_(id: string): Promise<void> {
 export default {
   getOne,
   persists,
+  persistsEmail,
   getAll,
   add,
   update,

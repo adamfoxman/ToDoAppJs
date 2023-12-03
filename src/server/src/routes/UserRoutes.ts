@@ -26,6 +26,15 @@ async function add(req: IReq<INewUser>, res: IRes) {
 }
 
 /**
+ * Register new user.
+ */
+async function register(req: IReq<INewUser>, res: IRes) {
+  const user: INewUser = req.body;
+  await UserService.register(user);
+  return res.status(HttpStatusCodes.CREATED).end();
+}
+
+/**
  * Update one user.
  */
 async function update(req: IReq<IUpdateUser>, res: IRes) {
@@ -49,6 +58,7 @@ async function delete_(req: IReq, res: IRes) {
 export default {
   getAll,
   add,
+  register,
   update,
-  delete: delete_,
+  delete: delete_
 } as const;
