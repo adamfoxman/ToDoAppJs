@@ -1,8 +1,9 @@
 import { ITask } from '@src/models/Task';
+import { ISessionUser } from '@src/models/User';
 import TaskRepo from '@src/repos/TaskRepo';
 
-async function getAll(): Promise<ITask[]> {
-  return await TaskRepo.getAll();
+async function getAll(user: ISessionUser | undefined): Promise<ITask[]> {
+  return await TaskRepo.getAll(user);
 }
 
 const addOne = async (task: ITask) => {

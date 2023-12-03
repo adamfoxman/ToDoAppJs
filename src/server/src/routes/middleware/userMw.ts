@@ -29,4 +29,23 @@ async function userMw(
     }
 }
 
-export default userMw;
+async function taskOwnershipMw(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) {
+    const user = res.locals.sessionUser;
+    const task = req.body;
+    if (user?.id === task?.userId) {
+        return next();
+    } else {
+        return res
+        .status(HttpStatusCodes.UNAUTHORIZED)
+        .json({ error: USER_UNAUTHORIZED_ERR });
+    }
+}
+
+export default {
+    userMw,
+    taskOwnershipMw
+} as const;

@@ -6,7 +6,7 @@ import Paths from '../constants/Paths';
 import AuthRoutes from './AuthRoutes';
 import UserRoutes from './UserRoutes';
 import TaskRoutes from './TaskRoutes';
-import userMw from './middleware/userMw';
+import UserMiddleware from './middleware/userMw';
 
 /**
  * Express router for the API endpoints.
@@ -388,7 +388,7 @@ taskRouter.get(Paths.Tasks.Get, TaskRoutes.getAll);
  */
 taskRouter.post(
   Paths.Tasks.Add,
-  validate(['owner', 'string', 'body']),
+  UserMiddleware.taskOwnershipMw,
   TaskRoutes.add);
 
 /**
@@ -475,7 +475,7 @@ taskRouter.delete(
 );
 
 // Add TaskRouter
-apiRouter.use(Paths.Tasks.Base, userMw, taskRouter);
+apiRouter.use(Paths.Tasks.Base, UserMiddleware.userMw, taskRouter);
 
 // **** Export default **** //
 
