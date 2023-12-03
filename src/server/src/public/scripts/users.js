@@ -60,9 +60,6 @@ function getUserDisplayEle(user) {
   );
 }
 
-
-// **** Add, Edit, and Delete Users **** //
-
 // Setup event listener for button click
 document.addEventListener('click', function (event) {
   event.preventDefault();
@@ -154,8 +151,6 @@ function deleteUser(ele) {
     .then(() => displayUsers());
 }
 
-
-// **** Logout **** //
 
 function logoutUser() {
   Http

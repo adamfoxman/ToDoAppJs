@@ -4,10 +4,6 @@ import UserService from '@src/services/UserService';
 import { INewUser, IUpdateUser, IUser } from '@src/models/User';
 import { IReq, IRes } from './types/express/misc';
 
-
-
-// **** Functions **** //
-
 /**
  * Get all users.
  */
@@ -52,13 +48,10 @@ async function delete_(req: IReq, res: IRes) {
   return res.status(HttpStatusCodes.OK).end();
 }
 
-
-// **** Export default **** //
-
 export default {
   getAll,
   add,
   register,
   update,
-  delete: delete_
+  delete: delete_,
 } as const;

@@ -1,12 +1,6 @@
 import bcrypt from 'bcrypt';
 
-
-// **** Variables **** //
-
 const SALT_ROUNDS = 12;
-
-
-// **** Functions **** //
 
 /**
  * Get a hash from the password.
@@ -28,9 +22,6 @@ function hashSync(pwd: string): string {
 function compare(pwd: string, hash: string): Promise<boolean> {
   return bcrypt.compare(pwd, hash);
 }
-
-
-// **** Export Default **** //
 
 export default {
   getHash,

@@ -11,7 +11,7 @@ async function persists(id: string): Promise<boolean> {
   return (await UserModel.exists({ id })) !== null ? true : false;
 }
 
-async function persistsEmail(email:string) {
+async function persistsEmail(email: string) {
   return (await UserModel.exists({ email })) !== null ? true : false;
 }
 

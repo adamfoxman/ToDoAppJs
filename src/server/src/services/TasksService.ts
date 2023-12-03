@@ -15,7 +15,7 @@ async function updateOne(task: ITask) {
   if (!persists) {
     throw new Error('Task not found');
   }
-  
+
   await TaskRepo.update(task);
 }
 
@@ -24,9 +24,8 @@ async function _delete(id: string) {
   if (!persists) {
     throw new Error('Task not found');
   }
-  
+
   await TaskRepo.delete(id);
-  
 }
 
 export default {

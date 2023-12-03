@@ -8,16 +8,8 @@ import UserRoutes from './UserRoutes';
 import TaskRoutes from './TaskRoutes';
 import UserMiddleware from './middleware/userMw';
 
-/**
- * Express router for the API endpoints.
- *
- * @remarks
- * This router handles authentication, user management, and task management.
- */
 const apiRouter = Router(),
   validate = jetValidator();
-
-// **** Setup AuthRouter **** //
 
 const authRouter = Router();
 
@@ -282,7 +274,6 @@ userRouter.delete(
 // Add UserRouter
 apiRouter.use(Paths.Users.Base, adminMw, userRouter);
 
-// **** Setup TaskRouter **** //
 const taskRouter = Router();
 
 /**
@@ -389,7 +380,8 @@ taskRouter.get(Paths.Tasks.Get, TaskRoutes.getAll);
 taskRouter.post(
   Paths.Tasks.Add,
   UserMiddleware.taskOwnershipMw,
-  TaskRoutes.add);
+  TaskRoutes.add,
+);
 
 /**
  * Update a task.
@@ -474,9 +466,6 @@ taskRouter.delete(
   TaskRoutes.delete,
 );
 
-// Add TaskRouter
 apiRouter.use(Paths.Tasks.Base, UserMiddleware.userMw, taskRouter);
-
-// **** Export default **** //
 
 export default apiRouter;

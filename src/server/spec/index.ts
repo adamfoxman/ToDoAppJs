@@ -5,18 +5,12 @@ import { parse } from 'ts-command-line-args';
 import logger from 'jet-logger';
 
 
-// **** Types **** //
-
 interface IArgs {
   testFile: string;
 }
 
 
-// **** Setup **** //
-
-// ** Init ** //
-
-// NOTE: MUST BE FIRST!! Load env vars
+// Load env vars
 const result2 = dotenv.config({
   path: './env/test.env',
 });
@@ -32,8 +26,6 @@ const args = parse<IArgs>({
   },
 });
 
-
-// ** Start Jasmine ** //
 
 // Init Jasmine
 const jasmine = new Jasmine();
