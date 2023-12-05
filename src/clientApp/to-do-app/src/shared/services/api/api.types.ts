@@ -19,3 +19,13 @@ export interface LoginPayload {
    email: string;
    password: string;
 }
+
+export interface Todo {
+   _id: string;
+   owner: string;
+   title: string;
+   description: string;
+   done: false;
+   dueDate?: string;
+   priority: Priority;
+}

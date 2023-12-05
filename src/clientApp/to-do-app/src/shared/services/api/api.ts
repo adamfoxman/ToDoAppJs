@@ -1,7 +1,13 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
 import config from "config";
 import Auth from "../Auth";
-import { CreateTodoPayload, LoginPayload, RegisterPayload } from "./api.types";
+import {
+   CreateTodoPayload,
+   LoginPayload,
+   RegisterPayload,
+   Todo,
+} from "./api.types";
+import { TodoListItem } from "shared/types/interfaces";
 
 class Api {
    protected api: AxiosInstance = axios.create({ baseURL: config.apiUrl });
@@ -43,6 +49,15 @@ class Api {
          user
       );
       return response;
+   }
+
+   public async getTodos(): Promise<TodoListItem[]> {
+      const response = await this.api.get<{ tasks: Todo[] }>("/api/tasks/all");
+      return response.data.tasks.map(({ _id, owner, dueDate, ...rest }) => ({
+         id: _id,
+         dueDate: dueDate ? new Date(dueDate) : undefined,
+         ...rest,
+      }));
    }
 }
 
