@@ -7,7 +7,7 @@ import PwdUtil from '@src/util/PwdUtil';
 import Paths from './Paths';
 
 
-// **** Variables **** //
+
 
 const LoginCreds = {
   email: 'jsmith@gmail.com',
@@ -15,7 +15,7 @@ const LoginCreds = {
 } as const;
 
 
-// **** Functions **** //
+
 
 /**
  * Login a user.
@@ -39,6 +39,6 @@ function login(beforeAgent: SuperTest<Test>, done: (arg: string) => void) {
 }
 
 
-// **** Export default **** //
+
 
 export default login;

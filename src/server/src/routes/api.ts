@@ -6,17 +6,10 @@ import Paths from '../constants/Paths';
 import AuthRoutes from './AuthRoutes';
 import UserRoutes from './UserRoutes';
 import TaskRoutes from './TaskRoutes';
+import UserMiddleware from './middleware/userMw';
 
-/**
- * Express router for the API endpoints.
- *
- * @remarks
- * This router handles authentication, user management, and task management.
- */
 const apiRouter = Router(),
   validate = jetValidator();
-
-// **** Setup AuthRouter **** //
 
 const authRouter = Router();
 
@@ -160,6 +153,50 @@ userRouter.get(Paths.Users.Get, UserRoutes.getAll);
 userRouter.post(Paths.Users.Add, UserRoutes.add);
 
 /**
+ * Register a user.
+ *
+ * @swagger
+ * /api/users/add:
+ *   post:
+ *     summary: Register a user.
+ *     description: Register a new user. This is the same as adding a user, but
+ *      with the added step of checking if the email already exists.
+ *     tags:
+ *     - Users
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: User name.
+ *                 example: John Doe
+ *               email:
+ *                 type: string
+ *                 description: User email.
+ *                 example: john@example.com
+ *               password:
+ *                 type: string
+ *                 description: User password.
+ *                 example: password123
+ *               role:
+ *                 type: string
+ *                 description: User role.
+ *                 example: STANDARD
+ *     responses:
+ *       201:
+ *         description: User added successfully.
+ *       400:
+ *         description: Invalid user data.
+ *       403:
+ *         description: Email already exists.
+ */
+userRouter.post(Paths.Users.Add, UserRoutes.register);
+
+/**
  * Update a user.
  *
  * @swagger
@@ -237,7 +274,6 @@ userRouter.delete(
 // Add UserRouter
 apiRouter.use(Paths.Users.Base, adminMw, userRouter);
 
-// **** Setup TaskRouter **** //
 const taskRouter = Router();
 
 /**
@@ -343,8 +379,9 @@ taskRouter.get(Paths.Tasks.Get, TaskRoutes.getAll);
  */
 taskRouter.post(
   Paths.Tasks.Add,
-  validate(['owner', 'string', 'body']),
-  TaskRoutes.add);
+  UserMiddleware.taskOwnershipMw,
+  TaskRoutes.add,
+);
 
 /**
  * Update a task.
@@ -429,9 +466,6 @@ taskRouter.delete(
   TaskRoutes.delete,
 );
 
-// Add TaskRouter
-apiRouter.use(Paths.Tasks.Base, taskRouter);
-
-// **** Export default **** //
+apiRouter.use(Paths.Tasks.Base, UserMiddleware.userMw, taskRouter);
 
 export default apiRouter;

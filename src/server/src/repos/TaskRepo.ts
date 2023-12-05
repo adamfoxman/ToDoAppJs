@@ -1,11 +1,14 @@
 import TaskModel, { ITask } from '@src/models/Task';
+import { ISessionUser } from '@src/models/User';
 
 async function getOne(id: number): Promise<ITask | null> {
   return TaskModel.findOne({ id }).exec();
 }
 
-async function getAll(): Promise<ITask[]> {
-  return TaskModel.find().exec();
+async function getAll(user: ISessionUser | undefined): Promise<ITask[]> {
+  return TaskModel.find({
+    owner: user?.id,
+  }).exec();
 }
 
 async function persists(id: string): Promise<boolean> {

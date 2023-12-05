@@ -1,8 +1,9 @@
 import { ITask } from '@src/models/Task';
+import { ISessionUser } from '@src/models/User';
 import TaskRepo from '@src/repos/TaskRepo';
 
-async function getAll(): Promise<ITask[]> {
-  return await TaskRepo.getAll();
+async function getAll(user: ISessionUser | undefined): Promise<ITask[]> {
+  return await TaskRepo.getAll(user);
 }
 
 const addOne = async (task: ITask) => {
@@ -14,7 +15,7 @@ async function updateOne(task: ITask) {
   if (!persists) {
     throw new Error('Task not found');
   }
-  
+
   await TaskRepo.update(task);
 }
 
@@ -23,9 +24,8 @@ async function _delete(id: string) {
   if (!persists) {
     throw new Error('Task not found');
   }
-  
+
   await TaskRepo.delete(id);
-  
 }
 
 export default {

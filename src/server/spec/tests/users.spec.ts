@@ -14,7 +14,7 @@ import Paths from 'spec/support/Paths';
 import { TReqBody } from 'spec/support/types';
 
 
-// **** Variables **** //
+
 
 // StatusCodes
 const {

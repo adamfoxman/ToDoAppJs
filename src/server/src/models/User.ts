@@ -42,11 +42,11 @@ const UserSchema: Schema = new Schema({
   role: { type: String, enum: UserRoles, required: false },
 });
 
-UserSchema.virtual('id').get(function (this: IUser) : string {
+UserSchema.virtual('id').get(function (this: IUser): string {
   return this._id;
 });
 
-UserSchema.virtual('url').get(function (this: IUser) : string {
+UserSchema.virtual('url').get(function (this: IUser): string {
   return `/users/${this._id}`;
 });
 

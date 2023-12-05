@@ -5,7 +5,7 @@ enum Priority {
   LOW = 'LOW',
   MEDIUM = 'MEDIUM',
   HIGH = 'HIGH',
-  VERY_HIGH = 'VERY_HIGH'
+  VERY_HIGH = 'VERY_HIGH',
 }
 
 export interface ITask extends Document {
@@ -18,7 +18,7 @@ export interface ITask extends Document {
 }
 
 const TaskSchema: Schema = new Schema({
-  owner: { type: Schema.Types.ObjectId, ref: 'User', required: true},
+  owner: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   title: { type: String, required: true },
   description: { type: String, required: false },
   done: { type: Boolean, required: true },
@@ -30,11 +30,11 @@ const TaskSchema: Schema = new Schema({
   },
 });
 
-TaskSchema.virtual('id').get(function (this: ITask) : string {
+TaskSchema.virtual('id').get(function (this: ITask): string {
   return this._id;
 });
 
-TaskSchema.virtual('url').get(function (this: ITask) : string {
+TaskSchema.virtual('url').get(function (this: ITask): string {
   return `/tasks/${this._id}`;
 });
 

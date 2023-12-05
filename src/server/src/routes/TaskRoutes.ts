@@ -3,16 +3,9 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 import TasksService from '@src/services/TasksService';
 import { ITask } from '@src/models/Task';
 
-/**
- * Create task
- */
-// const add = async (req: IReq<{ task: ITask }>, res: IRes) => {
-//   await TasksService.addTask(req.body.task);
-//   return res.status(HttpStatusCodes.CREATED).json({ taskId: 1 });
-// };
-
 async function getAll(_: IReq, res: IRes) {
-  const tasks = await TasksService.getAll();
+  const user = res.locals.sessionUser;
+  const tasks = await TasksService.getAll(user);
   return res.status(HttpStatusCodes.OK).json({ tasks });
 }
 
