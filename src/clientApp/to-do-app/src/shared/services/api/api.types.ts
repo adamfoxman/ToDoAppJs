@@ -9,6 +9,10 @@ export interface CreateTodoPayload {
    done: boolean;
 }
 
+export interface UpdateTodoPayload extends CreateTodoPayload {
+   _id: string;
+}
+
 export interface RegisterPayload {
    email: string;
    name: string;
@@ -25,7 +29,7 @@ export interface Todo {
    owner: string;
    title: string;
    description: string;
-   done: false;
+   done: boolean;
    dueDate?: string;
    priority: Priority;
 }

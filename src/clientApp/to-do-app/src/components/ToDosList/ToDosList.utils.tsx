@@ -15,8 +15,9 @@ import { Priority } from "shared/types/enums";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import PriorityProgressBar from "components/PriorityProgressBar";
+import { useAlertContext } from "shared/contexts/AlertContext";
 
-const useColumns = () => {
+const useColumns = (toggleDone: (id: string) => void) => {
    const _renderCell = useCallback(
       (params: GridRenderCellParams<TodoListItem, string>) => {
          const { value, row } = params;
@@ -98,7 +99,7 @@ const useColumns = () => {
                      icon={<CheckBoxIcon />}
                      label="Undone"
                      onClick={() => {
-                        console.log("done" + params.id);
+                        toggleDone(params.row.id);
                      }}
                   />
                ) : (
@@ -106,14 +107,14 @@ const useColumns = () => {
                      icon={<CheckBoxOutlineBlankIcon />}
                      label="Mark as done"
                      onClick={() => {
-                        console.log("undone" + params.id);
+                        toggleDone(params.row.id);
                      }}
                   />
                ),
             ],
          },
       ],
-      [_renderCell]
+      [_renderCell, toggleDone]
    );
 };
 
@@ -134,7 +135,34 @@ export const useDataGrid = () => {
       }
    }, []);
 
-   const columns = useColumns();
+   const showMessage = useAlertContext();
+   const toggleDone = useCallback(
+      async (id: string) => {
+         const api = new Api();
+         try {
+            const { task } = await api.getTodoById(id);
+            console.log(task);
+            if (!task) return;
+            const { done, _id, dueDate, ...restTask } = task;
+            await api.updateTodo({
+               _id: _id,
+               done: !done,
+               dueDate: dueDate ? new Date(dueDate) : undefined,
+               ...restTask,
+            });
+         } catch (error) {
+            showMessage(
+               "An error occurred during updating task status",
+               "error"
+            );
+         } finally {
+            getTodos();
+         }
+      },
+      [getTodos, showMessage]
+   );
+
+   const columns = useColumns(toggleDone);
 
    return { todos, loading, error, getTodos, columns };
 };

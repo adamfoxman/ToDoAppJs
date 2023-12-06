@@ -6,6 +6,7 @@ import {
    LoginPayload,
    RegisterPayload,
    Todo,
+   UpdateTodoPayload,
 } from "./api.types";
 import { TodoListItem } from "shared/types/interfaces";
 
@@ -58,6 +59,19 @@ class Api {
          dueDate: dueDate ? new Date(dueDate) : undefined,
          ...rest,
       }));
+   }
+
+   public async getTodoById(id: string) {
+      const response = await this.api.get<{ task: Todo }>(`/api/tasks/${id}`);
+      return response.data;
+   }
+
+   public async updateTodo(todo: UpdateTodoPayload) {
+      const response = await this.api.put<UpdateTodoPayload>(
+         `/api/tasks/update`,
+         todo
+      );
+      return response.data;
    }
 }
 
