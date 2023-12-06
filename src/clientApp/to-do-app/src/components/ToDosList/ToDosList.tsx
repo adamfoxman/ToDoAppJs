@@ -16,7 +16,6 @@ const ToDosList = () => {
          loading={loading}
          rows={todos ?? []}
          columns={columns}
-         autoHeight
          disableRowSelectionOnClick
          getRowClassName={({ row }: GridRowClassNameParams<TodoListItem>) =>
             !row.done && row.dueDate && row.dueDate < new Date()
@@ -32,8 +31,9 @@ const ToDosList = () => {
                   { field: propertyOf<TodoListItem>("done"), sort: "asc" },
                ],
             },
+            pagination: { paginationModel: { pageSize: 10 } },
          }}
-         pageSizeOptions={[5, 10, 20]}
+         pageSizeOptions={[5, 10, 20, 40]}
       />
    );
 };

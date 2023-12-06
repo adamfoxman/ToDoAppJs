@@ -25,7 +25,7 @@ async function update(task: ITask): Promise<void> {
 }
 
 async function delete_(id: string): Promise<void> {
-  await TaskModel.findOneAndDelete({ id }).exec();
+  await TaskModel.findOneAndDelete({ _id: id }).exec();
 }
 
 async function getOneWithUserCheck(

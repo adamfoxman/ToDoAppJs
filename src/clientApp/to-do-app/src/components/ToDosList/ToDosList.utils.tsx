@@ -16,8 +16,12 @@ import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import PriorityProgressBar from "components/PriorityProgressBar";
 import { useAlertContext } from "shared/contexts/AlertContext";
+import { useConfirmationDialog } from "shared/contexts/ConfirmationDialogContext";
 
-const useColumns = (toggleDone: (id: string) => void) => {
+const useColumns = (
+   toggleDone: (id: string) => void,
+   deleteTask: (id: string) => void
+) => {
    const _renderCell = useCallback(
       (params: GridRenderCellParams<TodoListItem, string>) => {
          const { value, row } = params;
@@ -25,6 +29,8 @@ const useColumns = (toggleDone: (id: string) => void) => {
       },
       []
    );
+
+   const showConfirmationDialog = useConfirmationDialog();
 
    return useMemo(
       (): GridColDef<TodoListItem>[] => [
@@ -91,7 +97,13 @@ const useColumns = (toggleDone: (id: string) => void) => {
                   icon={<DeleteIcon />}
                   label="Delete"
                   onClick={() => {
-                     console.log("delete" + params.id);
+                     showConfirmationDialog({
+                        message: "Are you sure you want to delete this task?",
+                        callback: () => {
+                           deleteTask(params.row.id);
+                        },
+                        title: "Delete task",
+                     });
                   }}
                />,
                params.row.done ? (
@@ -114,7 +126,7 @@ const useColumns = (toggleDone: (id: string) => void) => {
             ],
          },
       ],
-      [_renderCell, toggleDone]
+      [_renderCell, deleteTask, showConfirmationDialog, toggleDone]
    );
 };
 
@@ -141,7 +153,6 @@ export const useDataGrid = () => {
          const api = new Api();
          try {
             const { task } = await api.getTodoById(id);
-            console.log(task);
             if (!task) return;
             const { done, _id, dueDate, ...restTask } = task;
             await api.updateTodo({
@@ -162,7 +173,22 @@ export const useDataGrid = () => {
       [getTodos, showMessage]
    );
 
-   const columns = useColumns(toggleDone);
+   const deleteTask = useCallback(
+      async (id: string) => {
+         setLoading(true);
+         const api = new Api();
+         try {
+            await api.deleteTodoById(id);
+         } catch (error) {
+            showMessage("An error occurred during deleting task", "error");
+         } finally {
+            getTodos();
+         }
+      },
+      [getTodos, showMessage]
+   );
+
+   const columns = useColumns(toggleDone, deleteTask);
 
    return { todos, loading, error, getTodos, columns };
 };

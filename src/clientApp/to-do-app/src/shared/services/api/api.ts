@@ -73,6 +73,11 @@ class Api {
       );
       return response.data;
    }
+
+   public async deleteTodoById(id: string) {
+      const response = await this.api.delete(`/api/tasks/delete/${id}`);
+      return response.data;
+   }
 }
 
 export default Api;
