@@ -6,15 +6,15 @@ export enum UserRoles {
 }
 
 export interface IUser extends Document {
-  id: number;
+  id: string;
   name: string;
   email: string;
   pwdHash?: string;
-  role?: UserRoles;
+  role: UserRoles;
 }
 
 export interface ISessionUser {
-  id: number;
+  id: string;
   email: string;
   name: string;
   role: UserRoles;

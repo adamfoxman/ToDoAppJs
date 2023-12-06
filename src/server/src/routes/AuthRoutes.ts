@@ -16,13 +16,14 @@ async function login(req: IReq<ILoginReq>, res: IRes) {
   const { email, password } = req.body;
   // Login
   const user = await AuthService.login(email, password);
-  // Setup Admin Cookie
-  await SessionUtil.addSessionData(res, {
-    id: user.id,
-    email: user.email,
-    name: user.name,
-    role: user.role,
-  });
+  if (user) {
+    await SessionUtil.addSessionData(res, {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+    });
+  }
   // Return
   return res.status(HttpStatusCodes.OK).end();
 }

@@ -5,6 +5,7 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 
 import SessionUtil from '@src/util/SessionUtil';
 import { ISessionUser, UserRoles } from '@src/models/User';
+import { ITask } from '@src/models/Task';
 
 const USER_UNAUTHORIZED_ERR = 'User not authorized to perform this action';
 
@@ -32,8 +33,8 @@ async function taskOwnershipMw(
   next: NextFunction,
 ) {
   const user = res.locals.sessionUser;
-  const task = req.body;
-  if (user?.id === task?.userId) {
+  const task = req.body as ITask;
+  if (user?.id === task?.owner) {
     return next();
   } else {
     return res

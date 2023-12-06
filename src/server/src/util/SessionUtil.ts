@@ -5,6 +5,7 @@ import { RouteError } from '@src/other/classes';
 import jsonwebtoken from 'jsonwebtoken';
 
 import EnvVars from '../constants/EnvVars';
+import { ISessionUser } from '@src/models/User';
 
 // Errors
 const Errors = {
@@ -31,7 +32,7 @@ function getSessionData<T>(req: Request): Promise<string | T | undefined> {
  */
 async function addSessionData(
   res: Response,
-  data: string | object,
+  data: ISessionUser,
 ): Promise<Response> {
   if (!res || !data) {
     throw new RouteError(HttpStatusCodes.BAD_REQUEST, Errors.ParamFalsey);

@@ -1,5 +1,5 @@
 import UserRepo from '@src/repos/UserRepo';
-import User, { INewUser, IUser, IUpdateUser } from '@src/models/User';
+import { INewUser, IUser, IUpdateUser, UserRoles } from '@src/models/User';
 import { RouteError } from '@src/other/classes';
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 
@@ -16,7 +16,11 @@ function getAll(): Promise<IUser[]> {
 /**
  * Add one user.
  */
-function addOne(user: INewUser): Promise<void> {
+async function addOne(user: INewUser): Promise<void> {
+  const persists = await UserRepo.persistsEmail(user.email);
+  if (persists) {
+    throw new RouteError(HttpStatusCodes.BAD_REQUEST, USER_EMAIL_EXISTS_ERR);
+  }
   return UserRepo.add(user);
 }
 
@@ -29,6 +33,7 @@ async function register(user: INewUser): Promise<void> {
     throw new RouteError(HttpStatusCodes.BAD_REQUEST, USER_EMAIL_EXISTS_ERR);
   }
   // Add user
+  user.role = UserRoles.Standard;
   return UserRepo.add(user);
 }
 
