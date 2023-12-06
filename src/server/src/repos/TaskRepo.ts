@@ -12,7 +12,7 @@ async function getAll(user: ISessionUser | undefined): Promise<ITask[]> {
 }
 
 async function persists(id: string): Promise<boolean> {
-  return (await TaskModel.exists({ id })) !== null ? true : false;
+  return (await TaskModel.exists({ _id: id })) !== null ? true : false;
 }
 
 async function add(task: ITask): Promise<void> {
@@ -21,7 +21,7 @@ async function add(task: ITask): Promise<void> {
 }
 
 async function update(task: ITask): Promise<void> {
-  await TaskModel.updateOne({ id: task._id }, task).exec();
+  await TaskModel.updateOne({ _id: task._id }, task).exec();
 }
 
 async function delete_(id: string): Promise<void> {

@@ -395,7 +395,7 @@ taskRouter.post(
  *           schema:
  *             type: object
  *             properties:
- *               id:
+ *               _id:
  *                 type: number
  *                 description: Task ID.
  *                 example: 1
