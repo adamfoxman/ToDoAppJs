@@ -8,6 +8,7 @@ export default {
     Base: '/auth',
     Login: '/login',
     Logout: '/logout',
+    Register: '/register',
   },
   Users: {
     Base: '/users',

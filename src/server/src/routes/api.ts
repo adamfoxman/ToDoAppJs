@@ -12,6 +12,45 @@ const apiRouter = Router(),
   validate = jetValidator();
 
 const authRouter = Router();
+/**
+ * Register a user.
+ *
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: Register a user.
+ *     description: Register a new user. This is the same as adding a user, but
+ *      with the added step of checking if the email already exists.
+ *     tags:
+ *     - Auth
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: User name.
+ *                 example: John Doe
+ *               email:
+ *                 type: string
+ *                 description: User email.
+ *                 example: john@example.com
+ *               password:
+ *                 type: string
+ *                 description: User password.
+ *                 example: password123
+ *     responses:
+ *       201:
+ *         description: User added successfully.
+ *       400:
+ *         description: Invalid user data.
+ *       403:
+ *         description: Email already exists.
+ */
+authRouter.post(Paths.Auth.Register, UserRoutes.register);
 
 /**
  * Login user.
@@ -151,50 +190,6 @@ userRouter.get(Paths.Users.Get, UserRoutes.getAll);
  *         description: Invalid user data.
  */
 userRouter.post(Paths.Users.Add, UserRoutes.add);
-
-/**
- * Register a user.
- *
- * @swagger
- * /api/users/add:
- *   post:
- *     summary: Register a user.
- *     description: Register a new user. This is the same as adding a user, but
- *      with the added step of checking if the email already exists.
- *     tags:
- *     - Users
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 description: User name.
- *                 example: John Doe
- *               email:
- *                 type: string
- *                 description: User email.
- *                 example: john@example.com
- *               password:
- *                 type: string
- *                 description: User password.
- *                 example: password123
- *               role:
- *                 type: string
- *                 description: User role.
- *                 example: STANDARD
- *     responses:
- *       201:
- *         description: User added successfully.
- *       400:
- *         description: Invalid user data.
- *       403:
- *         description: Email already exists.
- */
-userRouter.post(Paths.Users.Add, UserRoutes.register);
 
 /**
  * Update a user.
