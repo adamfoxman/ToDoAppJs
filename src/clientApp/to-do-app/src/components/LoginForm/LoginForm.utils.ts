@@ -30,11 +30,10 @@ export const useOnSubmit = (loginCallback: () => void) => {
       const api = new Api();
       const { login, password } = values;
       try {
-         const response = await api.login({
+         await api.login({
             email: login,
             password: password,
          });
-         console.log("res", response);
          loginCallback();
       } catch (error) {
          const axiosError = error as AxiosError;

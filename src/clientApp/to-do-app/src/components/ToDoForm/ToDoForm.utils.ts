@@ -2,7 +2,11 @@ import { AxiosError } from "axios";
 import { useMemo } from "react";
 import { useAlertContext } from "shared/contexts/AlertContext";
 import { useAuth } from "shared/hooks/useAuth";
-import { CreateTodoPayload } from "shared/services/api";
+import {
+   CreateTodoPayload,
+   Todo,
+   UpdateTodoPayload,
+} from "shared/services/api";
 import Api from "shared/services/api/api";
 import { Priority } from "shared/types/enums";
 import { Schema, date, number, object, string } from "yup";
@@ -14,11 +18,20 @@ export interface ToDoValues {
    priority: number;
 }
 
-export const initialValues: ToDoValues = {
-   title: "",
-   description: "",
-   dueDate: null,
-   priority: 1,
+const useInitialValues = (task?: Todo): ToDoValues => {
+   const enumValues = useMapPriorityValueToEnum();
+
+   return useMemo<ToDoValues>(
+      (): ToDoValues => ({
+         title: task?.title || "",
+         description: task?.description || "",
+         dueDate: task?.dueDate ? new Date(task.dueDate) : null,
+         priority: task
+            ? enumValues.find((x) => x.enumValue === task.priority)?.value ?? 1
+            : 1,
+      }),
+      [enumValues, task]
+   );
 };
 
 export const useValidationSchema = (): Schema<ToDoValues> => {
@@ -37,11 +50,15 @@ export const useValidationSchema = (): Schema<ToDoValues> => {
    });
 };
 
-export const useOnSubmit = (submitCallback: () => void) => {
+export const useOnSubmit = (
+   submitCallback: () => void,
+   isEdit: boolean,
+   id?: string
+) => {
    const { tokenData } = useAuth();
    const enumValues = useMapPriorityValueToEnum();
    const showMessage = useAlertContext();
-   return async (values: ToDoValues) => {
+   const create = async (values: ToDoValues) => {
       const api = new Api();
       const { dueDate, priority, ...rest } = values;
       const payload: CreateTodoPayload = {
@@ -69,11 +86,38 @@ export const useOnSubmit = (submitCallback: () => void) => {
          );
       }
    };
+   const edit = async (values: ToDoValues) => {
+      const api = new Api();
+      const { dueDate, priority, ...rest } = values;
+      const payload: UpdateTodoPayload = {
+         dueDate: values.dueDate === null ? undefined : values.dueDate,
+         done: false,
+         owner: tokenData?.id || "",
+         priority:
+            enumValues.find(({ value }) => value === priority)?.enumValue ||
+            Priority.LOW,
+         _id: id || "",
+         ...rest,
+      };
+      try {
+         await api.updateTodo(payload);
+         submitCallback();
+      } catch (error) {
+         const axiosError = error as AxiosError;
+         showMessage(
+            `Server returned status ${axiosError.status}, message: ${axiosError.message}`,
+            "error"
+         );
+      }
+   };
+   return isEdit ? edit : create;
 };
 
-export const useForm = (submitCallback: () => void) => {
+export const useForm = (submitCallback: () => void, task?: Todo) => {
    const validationSchema = useValidationSchema();
-   const onSubmit = useOnSubmit(submitCallback);
+   const isEdit = task !== undefined;
+   const onSubmit = useOnSubmit(submitCallback, isEdit, task?._id);
+   const initialValues = useInitialValues(task);
    return { initialValues, validationSchema, onSubmit };
 };
 
@@ -105,7 +149,9 @@ const useMapPriorityValueToEnum = () => {
    );
 };
 
-export const usePrioritySliderValues = (): [
+export const usePrioritySliderValues = (
+   defaultValue?: Priority
+): [
    Array<{ value: number; label: string; enumValue: Priority }>,
    number,
    (value: number) => string | undefined,
@@ -115,7 +161,10 @@ export const usePrioritySliderValues = (): [
 ] => {
    const prioritySliderValues = useMapPriorityValueToEnum();
 
-   const defaultPrioritySliderValue = 1;
+   const defaultPrioritySliderValue = defaultValue
+      ? prioritySliderValues.find((x) => x.enumValue === defaultValue)?.value ??
+        1
+      : 1;
 
    const sliderLabelValueFormat = (value: number) =>
       prioritySliderValues.find((item) => item.value === value)?.label;

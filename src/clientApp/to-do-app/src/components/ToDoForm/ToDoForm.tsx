@@ -3,13 +3,15 @@ import { ToDoValues, useForm, usePrioritySliderValues } from "./ToDoForm.utils";
 import { Box, Button, Grid, Slider, Typography } from "@mui/material";
 import FormikTextField from "components/FormikTextField";
 import FormikDateTimePicker from "components/FormikDateTimePicker";
+import { Todo } from "shared/services/api";
 
 interface TodoFormProps {
-   onCreated: () => void;
+   onSuccess: () => void;
+   task?: Todo;
 }
 
 const TodoForm = (props: TodoFormProps) => {
-   const formProps = useForm(props.onCreated);
+   const formProps = useForm(props.onSuccess, props.task);
    const [
       prioritySliderValues,
       defaultSliderValue,
@@ -17,7 +19,7 @@ const TodoForm = (props: TodoFormProps) => {
       sliderGetAriaValueText,
       minValue,
       maxValue,
-   ] = usePrioritySliderValues();
+   ] = usePrioritySliderValues(props.task?.priority);
    return (
       <Formik
          initialValues={formProps.initialValues}

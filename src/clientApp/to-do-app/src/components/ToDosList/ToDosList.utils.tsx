@@ -17,6 +17,8 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import PriorityProgressBar from "components/PriorityProgressBar";
 import { useAlertContext } from "shared/contexts/AlertContext";
 import { useConfirmationDialog } from "shared/contexts/ConfirmationDialogContext";
+import { useNavigate } from "react-router-dom";
+import EditIcon from "@mui/icons-material/Edit";
 
 const useColumns = (
    toggleDone: (id: string) => void,
@@ -31,6 +33,7 @@ const useColumns = (
    );
 
    const showConfirmationDialog = useConfirmationDialog();
+   const navigate = useNavigate();
 
    return useMemo(
       (): GridColDef<TodoListItem>[] => [
@@ -123,10 +126,18 @@ const useColumns = (
                      }}
                   />
                ),
+               <GridActionsCellItem
+                  icon={<EditIcon />}
+                  label="Edit"
+                  disabled={params.row.done}
+                  onClick={() => {
+                     navigate(`/todos/edit/${params.row.id}`);
+                  }}
+               />,
             ],
          },
       ],
-      [_renderCell, deleteTask, showConfirmationDialog, toggleDone]
+      [_renderCell, deleteTask, navigate, showConfirmationDialog, toggleDone]
    );
 };
 

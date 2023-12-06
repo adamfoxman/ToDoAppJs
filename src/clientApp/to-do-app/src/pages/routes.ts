@@ -5,6 +5,7 @@ import AddTodoPage from "./AddToDoPage";
 import RegisterPage from "./Register";
 import paths from "config/paths";
 import LoginPage from "pages/Login";
+import EditTodoPage from "./EditToDoPage";
 
 const routes: ModuleRoute[] = [
    {
@@ -29,6 +30,10 @@ const routes: ModuleRoute[] = [
       path: paths.auth.login,
       Component: () => LoginPage(),
       public: true,
+   },
+   {
+      path: paths.todos.editTodo,
+      Component: () => EditTodoPage(),
    },
 ];
 
