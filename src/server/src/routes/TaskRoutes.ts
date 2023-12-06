@@ -17,13 +17,15 @@ async function add(req: IReq<ITask>, res: IRes) {
 
 async function update(req: IReq<ITask>, res: IRes) {
   const task: ITask = req.body;
-  await TasksService.updateTask(task);
+  const user = res.locals.sessionUser;
+  await TasksService.updateTask(task, user);
   return res.status(HttpStatusCodes.OK).end();
 }
 
 async function delete_(req: IReq, res: IRes) {
   const id: string = req.params.id;
-  await TasksService.delete(id);
+  const user = res.locals.sessionUser;
+  await TasksService.delete(id, user);
   return res.status(HttpStatusCodes.OK).end();
 }
 

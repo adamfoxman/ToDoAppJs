@@ -10,22 +10,22 @@ const addOne = async (task: ITask) => {
   await TaskRepo.add(task);
 };
 
-async function updateOne(task: ITask) {
+async function updateOne(task: ITask, user: ISessionUser | undefined) {
   const persists = await TaskRepo.persists(task._id);
   if (!persists) {
     throw new Error('Task not found');
   }
 
-  await TaskRepo.update(task);
+  await TaskRepo.updateWithUserCheck(task, user);
 }
 
-async function _delete(id: string) {
+async function _delete(id: string, user: ISessionUser | undefined) {
   const persists = await TaskRepo.persists(id);
   if (!persists) {
     throw new Error('Task not found');
   }
 
-  await TaskRepo.delete(id);
+  await TaskRepo.delete(id, user);
 }
 
 async function getOne(id: string, user?: ISessionUser): Promise<ITask | null> {
