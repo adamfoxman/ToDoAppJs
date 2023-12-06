@@ -28,6 +28,13 @@ async function delete_(id: string): Promise<void> {
   await TaskModel.findOneAndDelete({ id }).exec();
 }
 
+async function getOneWithUserCheck(
+  id: string,
+  user: ISessionUser,
+): Promise<ITask | null> {
+  return TaskModel.findOne({ _id: id, owner: user.id }).exec();
+}
+
 export default {
   getOne,
   getAll,
@@ -35,4 +42,5 @@ export default {
   add,
   update,
   delete: delete_,
+  getOneWithUserCheck,
 } as const;

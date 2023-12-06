@@ -28,9 +28,15 @@ async function _delete(id: string) {
   await TaskRepo.delete(id);
 }
 
+async function getOne(id: string, user?: ISessionUser): Promise<ITask | null> {
+  if (user) return await TaskRepo.getOneWithUserCheck(id, user);
+  else return null;
+}
+
 export default {
   getAll,
   addTask: addOne,
   updateTask: updateOne,
   delete: _delete,
+  getOne,
 } as const;

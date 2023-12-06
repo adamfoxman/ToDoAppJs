@@ -27,9 +27,20 @@ async function delete_(req: IReq, res: IRes) {
   return res.status(HttpStatusCodes.OK).end();
 }
 
+async function getOne(req: IReq, res: IRes) {
+  const { id } = req.params;
+  const user = res.locals.sessionUser;
+  const task = await TasksService.getOne(id, user);
+  if (!task) {
+    return res.status(HttpStatusCodes.NOT_FOUND).end();
+  }
+  return res.status(HttpStatusCodes.OK).json({ task });
+}
+
 export default {
   getAll,
   add,
   update,
   delete: delete_,
+  getOne,
 } as const;

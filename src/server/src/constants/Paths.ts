@@ -23,5 +23,6 @@ export default {
     Add: '/add',
     Update: '/update',
     Delete: '/delete/:id',
+    GetOne: '/:id',
   },
 } as const;

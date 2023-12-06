@@ -461,6 +461,70 @@ taskRouter.delete(
   TaskRoutes.delete,
 );
 
+/**
+ * Get one task.
+ *
+ * @swagger
+ * /api/tasks/{id}:
+ *  get:
+ *    summary: Get one task.
+ *    description: Get one task.
+ *    tags:
+ *    - Tasks
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: Task ID.
+ *        schema:
+ *        type: string
+ *        example: 5f9a2b9a9d6b2b1b1c9d9c9d
+ *    responses:
+ *      200:
+ *         description: Task.
+ *         content:
+ *           application/json:
+ *             schema:
+ *                properties:
+ *                  id:
+ *                    type: number
+ *                    description: Task ID.
+ *                    example: 1
+ *                  owner:
+ *                    type: string
+ *                    description: Task owner.
+ *                    example: 5f9a2b9a9d6b2b1b1c9d9c9d
+ *                  title:
+ *                    type: string
+ *                    description: Task title.
+ *                    example: Make a coffee.
+ *                  description:
+ *                    type: string
+ *                    description: Task description.
+ *                    example: Make a coffee with milk.
+ *                  done:
+ *                    type: boolean
+ *                    description: Task done.
+ *                    example: false
+ *                  dueDate:
+ *                    type: string
+ *                    description: Task due date.
+ *                    example: 2020-10-30T00:00:00.000Z
+ *                  priority:
+ *                    type: string
+ *                    description: Task priority.
+ *                    example: LOW
+ *      400:
+ *        description: Invalid task data.
+ *      404:
+ *        description: Task not found.
+ */
+taskRouter.get(
+  Paths.Tasks.GetOne,
+  validate(['id', 'string', 'params']),
+  TaskRoutes.getOne,
+);
+
 apiRouter.use(Paths.Tasks.Base, UserMiddleware.userMw, taskRouter);
 
 export default apiRouter;
