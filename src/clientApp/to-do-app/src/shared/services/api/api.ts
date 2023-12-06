@@ -37,7 +37,7 @@ class Api {
 
    public async registerUser(user: RegisterPayload) {
       const response = await this.api.post<RegisterPayload>(
-         "/api/users/add",
+         "/api/auth/register",
          user
       );
       return response;

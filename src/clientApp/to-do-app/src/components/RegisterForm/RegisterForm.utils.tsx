@@ -1,4 +1,4 @@
-import { HttpStatusCode } from "axios";
+import { AxiosError, HttpStatusCode } from "axios";
 import Api, { RegisterPayload } from "shared/services/api";
 import { object, string, Schema, ref } from "yup";
 import { useAlertContext } from "shared/contexts/AlertContext";
@@ -60,8 +60,12 @@ export const useOnSubmit = () => {
                "error"
             );
          }
-      } catch {
-         showMessage("Registration error. Please try again later", "error");
+      } catch (error) {
+         const axiosErr = error as AxiosError<{ error: string }>;
+         if (axiosErr.response?.status === HttpStatusCode.BadRequest)
+            showMessage(axiosErr.response.data.error, "error");
+         else
+            showMessage("Registration error. Please try again later", "error");
       }
    };
 };

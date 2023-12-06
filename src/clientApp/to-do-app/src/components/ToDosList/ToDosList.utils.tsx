@@ -16,49 +16,42 @@ import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import PriorityProgressBar from "components/PriorityProgressBar";
 
-export const useGetTodos = () => {
-   const [todos, setTodos] = useState<TodoListItem[] | null>(null);
-   const [loading, setLoading] = useState(false);
-   const [error, setError] = useState<Error | null>(null);
-   const getTodos = useCallback(async () => {
-      setLoading(true);
-      try {
-         const api = new Api();
-         const response = await api.getTodos();
-         setTodos(response);
-      } catch (error) {
-         setError(error as Error);
-      } finally {
-         setLoading(false);
-      }
-   }, []);
-   return { todos, loading, error, getTodos };
-};
+const useColumns = () => {
+   const _renderCell = useCallback(
+      (params: GridRenderCellParams<TodoListItem, string>) => {
+         const { value, row } = params;
+         return row.done ? <s>{value}</s> : value;
+      },
+      []
+   );
 
-export const useDataGrid = (): [GridColDef[]] => {
-   const columns = useMemo(
+   return useMemo(
       (): GridColDef<TodoListItem>[] => [
          {
             field: propertyOf<TodoListItem>("done"),
             headerName: "Done",
             renderCell: ({
                value,
-            }: GridRenderCellParams<TodoListItem, string>) => {
+            }: GridRenderCellParams<TodoListItem, boolean>) => {
                return value && <DoneIcon />;
             },
             type: "boolean",
-            flex: 1,
+            flex: 3,
+            hideable: false,
          },
          {
             field: propertyOf<TodoListItem>("title"),
             headerName: "Title",
             flex: 6,
             minWidth: 100,
+            hideable: false,
+            renderCell: _renderCell,
          },
          {
             field: propertyOf<TodoListItem>("description"),
             headerName: "Description",
             flex: 12,
+            renderCell: _renderCell,
          },
          {
             field: propertyOf<TodoListItem>("dueDate"),
@@ -91,6 +84,7 @@ export const useDataGrid = (): [GridColDef[]] => {
             type: "actions",
             flex: 5,
             minWidth: 100,
+            hideable: false,
             getActions: (params: GridRowParams<TodoListItem>) => [
                <GridActionsCellItem
                   icon={<DeleteIcon />}
@@ -119,8 +113,28 @@ export const useDataGrid = (): [GridColDef[]] => {
             ],
          },
       ],
-      []
+      [_renderCell]
    );
+};
 
-   return [columns];
+export const useDataGrid = () => {
+   const [todos, setTodos] = useState<TodoListItem[] | null>(null);
+   const [loading, setLoading] = useState(false);
+   const [error, setError] = useState<Error | null>(null);
+   const getTodos = useCallback(async () => {
+      setLoading(true);
+      try {
+         const api = new Api();
+         const response = await api.getTodos();
+         setTodos(response);
+      } catch (error) {
+         setError(error as Error);
+      } finally {
+         setLoading(false);
+      }
+   }, []);
+
+   const columns = useColumns();
+
+   return { todos, loading, error, getTodos, columns };
 };
