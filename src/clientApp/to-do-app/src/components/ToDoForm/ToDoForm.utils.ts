@@ -1,20 +1,37 @@
-import { CreateTodoPayload } from "shared/services/api";
+import { AxiosError } from "axios";
+import { useMemo } from "react";
+import { useAlertContext } from "shared/contexts/AlertContext";
+import { useAuth } from "shared/hooks/useAuth";
+import {
+   CreateTodoPayload,
+   Todo,
+   UpdateTodoPayload,
+} from "shared/services/api";
 import Api from "shared/services/api/api";
 import { Priority } from "shared/types/enums";
-import { Schema, date, mixed, object, string } from "yup";
+import { Schema, date, number, object, string } from "yup";
 
 export interface ToDoValues {
    title: string;
    description: string;
    dueDate?: Date | null;
-   priority: Priority;
+   priority: number;
 }
 
-export const initialValues: ToDoValues = {
-   title: "",
-   description: "",
-   dueDate: null,
-   priority: Priority.LOW,
+const useInitialValues = (task?: Todo): ToDoValues => {
+   const enumValues = useMapPriorityValueToEnum();
+
+   return useMemo<ToDoValues>(
+      (): ToDoValues => ({
+         title: task?.title || "",
+         description: task?.description || "",
+         dueDate: task?.dueDate ? new Date(task.dueDate) : null,
+         priority: task
+            ? enumValues.find((x) => x.enumValue === task.priority)?.value ?? 1
+            : 1,
+      }),
+      [enumValues, task]
+   );
 };
 
 export const useValidationSchema = (): Schema<ToDoValues> => {
@@ -29,74 +46,141 @@ export const useValidationSchema = (): Schema<ToDoValues> => {
          .min(new Date(), "Due date must be in the future")
          .typeError("Incorrect date format")
          .nullable(),
-      priority: mixed<Priority>()
-         .oneOf(Object.values(Priority) as number[])
-         .required(),
+      priority: number().required().max(4).min(1).integer(),
    });
 };
 
-export const useOnSubmit = (submitCallback: () => void) => {
-   return async (values: ToDoValues) => {
+export const useOnSubmit = (
+   submitCallback: () => void,
+   isEdit: boolean,
+   id?: string
+) => {
+   const { tokenData } = useAuth();
+   const enumValues = useMapPriorityValueToEnum();
+   const showMessage = useAlertContext();
+   const create = async (values: ToDoValues) => {
       const api = new Api();
-      const { dueDate, ...rest } = values;
+      const { dueDate, priority, ...rest } = values;
       const payload: CreateTodoPayload = {
          dueDate: values.dueDate === null ? undefined : values.dueDate,
+         done: false,
+         owner: tokenData?.id || "",
+         priority:
+            enumValues.find(({ value }) => value === priority)?.enumValue ||
+            Priority.LOW,
          ...rest,
       };
-      const res = await api.addTodo(payload);
-      if (res.status === 201) {
-         console.log("Todo added successfully");
-         submitCallback();
-      } else {
-         //show error
-         console.log(res);
+      try {
+         const res = await api.addTodo(payload);
+         if (res.status === 201) {
+            showMessage("Task added successfully", "success");
+            submitCallback();
+         } else {
+            showMessage("Something went wrong", "error");
+         }
+      } catch (error) {
+         const axiosError = error as AxiosError;
+         showMessage(
+            `Server returned status ${axiosError.status}, message: ${axiosError.message}`,
+            "error"
+         );
       }
    };
+   const edit = async (values: ToDoValues) => {
+      const api = new Api();
+      const { dueDate, priority, ...rest } = values;
+      const payload: UpdateTodoPayload = {
+         dueDate: values.dueDate === null ? undefined : values.dueDate,
+         done: false,
+         owner: tokenData?.id || "",
+         priority:
+            enumValues.find(({ value }) => value === priority)?.enumValue ||
+            Priority.LOW,
+         _id: id || "",
+         ...rest,
+      };
+      try {
+         await api.updateTodo(payload);
+         submitCallback();
+      } catch (error) {
+         const axiosError = error as AxiosError;
+         showMessage(
+            `Server returned status ${axiosError.status}, message: ${axiosError.message}`,
+            "error"
+         );
+      }
+   };
+   return isEdit ? edit : create;
 };
 
-export const useForm = (submitCallback: () => void) => {
+export const useForm = (submitCallback: () => void, task?: Todo) => {
    const validationSchema = useValidationSchema();
-   const onSubmit = useOnSubmit(submitCallback);
+   const isEdit = task !== undefined;
+   const onSubmit = useOnSubmit(submitCallback, isEdit, task?._id);
+   const initialValues = useInitialValues(task);
    return { initialValues, validationSchema, onSubmit };
 };
 
-export const usePrioritySliderValues = (): [
-   Array<{ value: number; label: string }>,
-   Priority,
-   (value: Priority) => string | undefined,
-   (value: Priority) => string
+const useMapPriorityValueToEnum = () => {
+   return useMemo<Array<{ value: number; label: string; enumValue: Priority }>>(
+      () => [
+         {
+            value: 1,
+            label: "Low",
+            enumValue: Priority.LOW,
+         },
+         {
+            enumValue: Priority.MEDIUM,
+            label: "Medium",
+            value: 2,
+         },
+         {
+            enumValue: Priority.HIGH,
+            label: "High",
+            value: 3,
+         },
+         {
+            enumValue: Priority.VERY_HIGH,
+            label: "Very High",
+            value: 4,
+         },
+      ],
+      []
+   );
+};
+
+export const usePrioritySliderValues = (
+   defaultValue?: Priority
+): [
+   Array<{ value: number; label: string; enumValue: Priority }>,
+   number,
+   (value: number) => string | undefined,
+   (value: number) => string,
+   number,
+   number
 ] => {
-   const prioritySliderValues: Array<{ value: number; label: string }> = [
-      {
-         value: Priority.LOW,
-         label: "Low",
-      },
-      {
-         value: Priority.MEDIUM,
-         label: "Medium",
-      },
-      {
-         value: Priority.HIGH,
-         label: "High",
-      },
-      {
-         value: Priority.VERY_HIGH,
-         label: "Very High",
-      },
-   ];
+   const prioritySliderValues = useMapPriorityValueToEnum();
 
-   const defaultPrioritySliderValue = Priority.LOW;
+   const defaultPrioritySliderValue = defaultValue
+      ? prioritySliderValues.find((x) => x.enumValue === defaultValue)?.value ??
+        1
+      : 1;
 
-   const sliderLabelValueFormat = (value: Priority) =>
+   const sliderLabelValueFormat = (value: number) =>
       prioritySliderValues.find((item) => item.value === value)?.label;
 
-   const sliderGetAriaValueText = (value: Priority) =>
+   const sliderGetAriaValueText = (value: number) =>
       `${sliderLabelValueFormat(value)}`;
+
+   const minValue = 1;
+   const maxValue = 4;
 
    return [
       prioritySliderValues,
       defaultPrioritySliderValue,
       sliderLabelValueFormat,
       sliderGetAriaValueText,
+      minValue,
+      maxValue,
    ];
 };

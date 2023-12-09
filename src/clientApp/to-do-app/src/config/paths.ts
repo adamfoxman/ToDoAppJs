@@ -3,6 +3,7 @@ const paths = {
    todos: {
       main: "/todos",
       addTodo: "/todos/add",
+      editTodo: "/todos/edit/:id",
    },
    auth: {
       register: "/register",

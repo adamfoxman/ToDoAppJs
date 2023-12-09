@@ -5,6 +5,7 @@ import Layout from "components/Layout/Layout";
 import routes from "pages/routes";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import PrivateRoute from "components/PrivateRoute";
 
 const theme = createTheme();
 
@@ -16,9 +17,15 @@ const App = () => {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                <Layout>
                   <Routes>
-                     {routes.map((route) => (
-                        <Route key={route.path} {...route} />
-                     ))}
+                     {routes.map((route) =>
+                        route.public ? (
+                           <Route key={route.path} {...route} />
+                        ) : (
+                           <Route key={route.path} element={<PrivateRoute />}>
+                              <Route {...route} />
+                           </Route>
+                        )
+                     )}
                   </Routes>
                </Layout>
             </LocalizationProvider>

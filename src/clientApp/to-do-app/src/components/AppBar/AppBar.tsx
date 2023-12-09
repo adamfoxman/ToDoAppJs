@@ -74,7 +74,7 @@ const ApplicationAppBar: FunctionComponent<AppBarProps> = (props) => {
                      variant="subtitle1"
                      sx={{ textTransform: "uppercase" }}
                   >
-                     Hello {tokenData?.login}
+                     Hello {tokenData?.name} {"(" + tokenData?.email + ")"}
                   </Typography>
                   <Button onClick={logout} color="inherit">
                      Log out

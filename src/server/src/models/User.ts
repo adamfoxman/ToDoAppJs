@@ -1,85 +1,53 @@
-// **** Variables **** //
-
-const INVALID_CONSTRUCTOR_PARAM = 'nameOrObj arg must a string or an ' + 
-  'object with the appropriate user keys.';
+import { Schema, model, Document } from 'mongoose';
 
 export enum UserRoles {
-  Standard,
-  Admin,
+  Standard = 'STANDARD',
+  Admin = 'ADMIN',
 }
 
-
-// **** Types **** //
-
-export interface IUser {
-  id: number;
+export interface IUser extends Document {
+  id: string;
   name: string;
   email: string;
   pwdHash?: string;
-  role?: UserRoles;
+  role: UserRoles;
 }
 
 export interface ISessionUser {
-  id: number;
+  id: string;
   email: string;
   name: string;
-  role: IUser['role'];
+  role: UserRoles;
 }
 
-
-// **** Functions **** //
-
-/**
- * Create new User.
- */
-function new_(
-  name?: string,
-  email?: string,
-  role?: UserRoles,
-  pwdHash?: string,
-  id?: number, // id last cause usually set by db
-): IUser {
-  return {
-    id: (id ?? -1),
-    name: (name ?? ''),
-    email: (email ?? ''),
-    role: (role ?? UserRoles.Standard),
-    pwdHash: (pwdHash ?? ''),
-  };
+export interface INewUser {
+  name: string;
+  email: string;
+  password: string;
+  role?: UserRoles;
 }
 
-/**
- * Get user instance from object.
- */
-function from(param: object): IUser {
-  // Check is user
-  if (!isUser(param)) {
-    throw new Error(INVALID_CONSTRUCTOR_PARAM);
-  }
-  // Get user instance
-  const p = param as IUser;
-  return new_(p.name, p.email, p.role, p.pwdHash, p.id);
+export interface IUpdateUser {
+  id: string;
+  name?: string;
+  email?: string;
+  password?: string;
+  role?: UserRoles;
 }
 
-/**
- * See if the param meets criteria to be a user.
- */
-function isUser(arg: unknown): boolean {
-  return (
-    !!arg &&
-    typeof arg === 'object' &&
-    'id' in arg &&
-    'email' in arg &&
-    'name' in arg &&
-    'role' in arg
-  );
-}
+const UserSchema: Schema = new Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  pwdHash: { type: String, required: false },
+  role: { type: String, enum: UserRoles, required: false },
+});
 
+UserSchema.virtual('id').get(function (this: IUser): string {
+  return this._id;
+});
 
-// **** Export default **** //
+UserSchema.virtual('url').get(function (this: IUser): string {
+  return `/users/${this._id}`;
+});
 
-export default {
-  new: new_,
-  from,
-  isUser,
-} as const;
+export default model<IUser>('User', UserSchema);

@@ -1,14 +1,26 @@
 import { JwtPayload } from "jwt-decode";
+import { Priority } from "./enums";
 
 //TODO change it
 export interface tokenData extends JwtPayload {
-   unique_name: string;
+   id: string;
    role: string;
    email: string;
+   name: string;
 }
 
 export interface SignedIdUser {
    email: string;
-   login: string;
+   name: string;
    role: string;
+   id: string;
+}
+
+export interface TodoListItem {
+   id: string;
+   title: string;
+   description: string;
+   dueDate?: Date;
+   priority: Priority;
+   done: boolean;
 }

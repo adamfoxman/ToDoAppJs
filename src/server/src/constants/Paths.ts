@@ -8,6 +8,7 @@ export default {
     Base: '/auth',
     Login: '/login',
     Logout: '/logout',
+    Register: '/register',
   },
   Users: {
     Base: '/users',
@@ -18,8 +19,10 @@ export default {
   },
   Tasks: {
     Base: '/tasks',
+    Get: '/all',
     Add: '/add',
     Update: '/update',
     Delete: '/delete/:id',
+    GetOne: '/:id',
   },
 } as const;

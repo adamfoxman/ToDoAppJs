@@ -1,13 +1,10 @@
-/**
- * Setup express server.
- */
-
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import path from 'path';
 import helmet from 'helmet';
 import express, { Request, Response, NextFunction } from 'express';
 import logger from 'jet-logger';
+import mongoose from 'mongoose';
 
 import 'express-async-errors';
 
@@ -22,31 +19,24 @@ import { RouteError } from '@src/other/classes';
 import { setupSwagger } from './swagger';
 import { setupCors } from './cors';
 
-// **** Variables **** //
-
 const app = express();
 
-// **** Setup **** //
+mongoose.connect(EnvVars.Database.URI);
 
-// Basic middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(EnvVars.CookieProps.Secret));
 setupCors(app);
 
-// Show routes called in console during development
 if (EnvVars.NodeEnv === NodeEnvs.Dev.valueOf()) {
   app.use(morgan('dev'));
 }
 
-// Security
 if (EnvVars.NodeEnv === NodeEnvs.Production.valueOf()) {
   app.use(helmet());
 }
-// Add APIs, must be after middleware
 app.use(Paths.Base, BaseRouter);
 
-// Add error handler
 app.use(
   (
     err: Error,
@@ -65,8 +55,6 @@ app.use(
     return res.status(status).json({ error: err.message });
   },
 );
-
-// ** Front-End Content ** //
 
 // Set views directory (html)
 const viewsDir = path.join(__dirname, 'views');
@@ -91,6 +79,5 @@ app.get('/users', (req: Request, res: Response) => {
   }
 });
 setupSwagger(app);
-// **** Export default **** //
 
 export default app;

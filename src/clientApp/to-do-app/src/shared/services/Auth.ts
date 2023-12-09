@@ -1,27 +1,20 @@
 import config from "config";
 import { jwtDecode } from "jwt-decode";
 import { tokenData, SignedIdUser } from "shared/types/interfaces";
+import Cookies from "js-cookie";
 
 class Auth {
-   static setToken(token: string) {
-      return localStorage.setItem(config.storageTokenKey, token);
-   }
-
    static getToken() {
-      return localStorage.getItem(config.storageTokenKey);
+      let cookie = Cookies.get(config.storageTokenKey);
+      if (cookie) cookie = cookie.substring(2);
+      return cookie;
    }
 
    static getTokenData() {
       const token = Auth.getToken();
-      if (token !== null) {
+      if (token) {
          const data = jwtDecode<tokenData>(token);
-
-         const user: SignedIdUser = {
-            email: data.email,
-            login: data.unique_name,
-            role: data.role,
-         };
-
+         const user: SignedIdUser = { ...data };
          return user;
       }
    }
@@ -31,7 +24,7 @@ class Auth {
    }
 
    static logout() {
-      localStorage.removeItem(config.storageTokenKey);
+      Cookies.remove(config.storageTokenKey);
       window.location.reload();
    }
 }

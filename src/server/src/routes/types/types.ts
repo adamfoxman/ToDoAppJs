@@ -3,9 +3,6 @@ import { Query } from 'express-serve-static-core';
 
 import { ISessionUser } from '@src/models/User';
 
-
-// **** Express **** //
-
 export interface IReq<T = void> extends e.Request {
   body: T;
 }

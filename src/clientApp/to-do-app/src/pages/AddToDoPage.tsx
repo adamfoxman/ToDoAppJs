@@ -21,7 +21,7 @@ const AddTodoPage = () => {
       <>
          <Typography variant="h3">Add new task</Typography>
          <Divider />
-         <TodoForm onCreated={onCreated} />
+         <TodoForm onSuccess={() => onCreated()} />
       </>
    );
 };
