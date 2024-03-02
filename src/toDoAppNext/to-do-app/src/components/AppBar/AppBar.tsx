@@ -3,6 +3,7 @@ import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { FunctionComponent } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import { paths } from "@/config";
+import { useRouter } from "next/navigation";
 // import { useAuth } from "shared/hooks/useAuth";
 
 interface AppBarProps extends MuiAppBarProps {
@@ -32,10 +33,9 @@ const AppBar = styled(MuiAppBar, {
 const ApplicationAppBar: FunctionComponent<AppBarProps> = (props) => {
    const { open, toggleDrawer } = props;
 
-   const routeChange = (path: string) => {
-      //navigate(path);
-      alert(`Navigate to: ${path} - todo implement me!`);
-   };
+   const router = useRouter();
+
+   const routeChange = (path: string) => router.push(path);
 
    //const { isAuthenticated, logout, tokenData } = useAuth();
 
