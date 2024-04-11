@@ -80,7 +80,7 @@ const ApplicationAppBar: FunctionComponent<AppBarProps> = (props) => {
                   </Button>
                </>
             ) :  */}
-            (
+
             <>
                <Button
                   onClick={() => routeChange(paths.auth.login)}
@@ -101,7 +101,6 @@ const ApplicationAppBar: FunctionComponent<AppBarProps> = (props) => {
                   Sign Up
                </Button>
             </>
-            )
          </Toolbar>
       </AppBar>
    );

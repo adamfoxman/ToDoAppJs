@@ -14,6 +14,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import { paths } from "@/config";
 import TaskOutlinedIcon from "@mui/icons-material/TaskOutlined";
+import Link from "next/link";
 //import { useAuth } from "shared/hooks/useAuth";
 
 export interface DrawerProps extends MuiDrawerProps {
@@ -66,22 +67,21 @@ const AppDrawer: FunctionComponent<DrawerProps> = (props) => {
             </IconButton>
          </Toolbar>
          <Divider />
-         {/* <List component="nav">
-            <ListItemButton component={Link} to={paths.main}>
+         <List component="nav">
+            <ListItemButton component={Link} href={paths.main}>
                <ListItemIcon>
                   <DashboardIcon />
                </ListItemIcon>
                <ListItemText primary="Main Page" />
             </ListItemButton>
-            {auth.isAuthenticated && (
-               <ListItemButton component={Link} to={paths.todos.main}>
-                  <ListItemIcon>
-                     <TaskOutlinedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Todos" />
-               </ListItemButton>
-            )}
-         </List> TODO - LINKS */}
+            {/*{auth.isAuthenticated && (*/}
+            <ListItemButton component={Link} href={paths.todos.main}>
+               <ListItemIcon>
+                  <TaskOutlinedIcon />
+               </ListItemIcon>
+               <ListItemText primary="Todos" />
+            </ListItemButton>
+         </List>
       </Drawer>
    );
 };

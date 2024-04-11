@@ -1,7 +1,8 @@
 import { object, string, Schema, ref } from "yup";
-//import { useAlertContext } from "shared/contexts/AlertContext";
+import { useAlertContext } from "@/shared/contexts/AlertContext";
 import { paths } from "@/config";
 import { useRouter } from "next/navigation";
+import { addOne } from "@/shared/services/UserService";
 
 export interface RegisterFormValues {
    name: string;
@@ -35,37 +36,23 @@ export const useValidationSchema = (): Schema<RegisterFormValues> => {
 };
 
 export const useOnSubmit = () => {
-   //const showMessage = useAlertContext();
+   const showMessage = useAlertContext();
    const router = useRouter();
    return async (values: RegisterFormValues) => {
-      alert(JSON.stringify(values));
-      //    var user: RegisterPayload = {
-      //       email: values.email,
-      //       password: values.password,
-      //       name: values.name,
-      //    };
-      //    const api = new Api();
-      //    try {
-      //       const response = await api.registerUser(user);
-      //       if (response.status === HttpStatusCode.Created) {
-      //          showMessage(
-      //             "You have successfully created an account. Now you can sign in",
-      //             "success"
-      //          );
-      //          navigate(paths.auth.login);
-      //       } else {
-      //          showMessage(
-      //             `Registration error: ${response.data} ${response.statusText}`,
-      //             "error"
-      //          );
-      //       }
-      //    } catch (error) {
-      //       const axiosErr = error as AxiosError<{ error: string }>;
-      //       if (axiosErr.response?.status === HttpStatusCode.BadRequest)
-      //          showMessage(axiosErr.response.data.error, "error");
-      //       else
-      //          showMessage("Registration error. Please try again later", "error");
-      //    }
+      try {
+         await addOne({
+            name: values.name,
+            email: values.email,
+            password: values.password,
+         });
+         showMessage(
+            "You have successfully created an account. Now you can sign in",
+            "success"
+         );
+         router.push(paths.auth.login);
+      } catch (error) {
+         showMessage("Registration error. Please try again later", "error");
+      }
    };
 };
 
