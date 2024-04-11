@@ -2,6 +2,7 @@ import { Divider, Grid, IconButton, Typography } from "@mui/material";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import Link from "next/link";
 import { paths } from "@/config";
+import ToDosList from "@/components/ToDosList/ToDosList";
 
 const ToDosPage = () => {
    return (
@@ -22,7 +23,7 @@ const ToDosPage = () => {
             </Grid>
          </Grid>
          <Divider sx={{ my: 2 }} />
-         {/* <ToDosList /> */}
+         <ToDosList />
       </>
    );
 };

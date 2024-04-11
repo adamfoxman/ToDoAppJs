@@ -50,4 +50,4 @@ UserSchema.virtual("url").get(function (this: IUser): string {
    return `/users/${this._id}`;
 });
 
-export default mongoose.models.User || model<IUser>("User", UserSchema);
+export default mongoose.models?.User || model<IUser>("User", UserSchema);
