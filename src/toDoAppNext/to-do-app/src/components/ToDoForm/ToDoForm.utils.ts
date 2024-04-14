@@ -3,7 +3,8 @@ import { useAlertContext } from "@/shared/contexts/AlertContext";
 import { Priority } from "@/shared/types/enums";
 import { Schema, date, number, object, string } from "yup";
 import { ITask } from "@/shared/db/Task";
-import { addOne } from "@/shared/services/TasksService";
+import { addOne, updateOne } from "@/shared/services/TasksService";
+import { ISessionUser } from "@/shared/db/User";
 
 export interface ToDoValues {
    title: string;
@@ -73,29 +74,28 @@ export const useOnSubmit = (
       }
    };
    const edit = async (values: ToDoValues) => {
-      //TODO edit
-      // const api = new Api();
-      // const { dueDate, priority, ...rest } = values;
-      // const payload: UpdateTodoPayload = {
-      //    dueDate: values.dueDate === null ? undefined : values.dueDate,
-      //    done: false,
-      //    owner: tokenData?.id || "",
-      //    priority:
-      //       enumValues.find(({ value }) => value === priority)?.enumValue ||
-      //       Priority.LOW,
-      //    _id: id || "",
-      //    ...rest,
-      // };
-      // try {
-      //    await api.updateTodo(payload);
-      //    submitCallback();
-      // } catch (error) {
-      //    const axiosError = error as AxiosError;
-      //    showMessage(
-      //       `Server returned status ${axiosError.status}, message: ${axiosError.message}`,
-      //       "error"
-      //    );
-      // }
+      const { dueDate, priority, ...rest } = values;
+      const payload = {
+         dueDate: values.dueDate === null ? undefined : values.dueDate,
+         done: false,
+         owner: "5f9a2b9a9d6b2b1b1c9d9c9d" || "", //TODO - temporary solution
+         priority:
+            enumValues.find(({ value }) => value === priority)?.enumValue ||
+            Priority.LOW,
+         _id: id || "",
+         ...rest,
+      } as ITask;
+      try {
+         await updateOne(payload, {
+            id: "5f9a2b9a9d6b2b1b1c9d9c9d" || "",
+         } as ISessionUser); //TODO - temporary solution
+         submitCallback();
+      } catch (error) {
+         showMessage(
+            `An error occured while updating the task: ${error}`,
+            "error"
+         );
+      }
    };
    return isEdit ? edit : create;
 };

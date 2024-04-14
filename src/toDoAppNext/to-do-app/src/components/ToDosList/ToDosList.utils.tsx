@@ -14,12 +14,17 @@ import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import PriorityProgressBar from "@/components/PriorityProgressBar";
 import { useAlertContext } from "@/shared/contexts/AlertContext";
-// import { useConfirmationDialog } from "shared/contexts/ConfirmationDialogContext";
+import { useConfirmationDialog } from "@/shared/contexts/ConfirmationDialogContext";
 import EditIcon from "@mui/icons-material/Edit";
 import { useRouter } from "next/navigation";
 import { ITask } from "@/shared/db/Task";
-import { getAll } from "@/shared/services/TasksService";
-import { UserRoles } from "@/shared/db/User";
+import {
+   getAll,
+   getOne,
+   updateOne,
+   deleteTask,
+} from "@/shared/services/TasksService";
+import { ISessionUser, UserRoles } from "@/shared/db/User";
 
 const useColumns = (
    toggleDone: (id: string) => void,
@@ -33,7 +38,7 @@ const useColumns = (
       []
    );
 
-   //const showConfirmationDialog = useConfirmationDialog();
+   const showConfirmationDialog = useConfirmationDialog();
    const router = useRouter();
 
    return useMemo(
@@ -98,13 +103,13 @@ const useColumns = (
                   label="Delete"
                   key="Delete"
                   onClick={() => {
-                     // showConfirmationDialog({
-                     //    message: "Are you sure you want to delete this task?",
-                     //    callback: () => {
-                     //       deleteTask(params.row.id);
-                     //    },
-                     //    title: "Delete task",
-                     // });
+                     showConfirmationDialog({
+                        message: "Are you sure you want to delete this task?",
+                        callback: () => {
+                           deleteTask(params.row._id);
+                        },
+                        title: "Delete task",
+                     });
                   }}
                />,
                params.row.done ? (
@@ -112,7 +117,7 @@ const useColumns = (
                      icon={<CheckBoxIcon />}
                      label="Undone"
                      onClick={() => {
-                        toggleDone(params.row.id);
+                        toggleDone(params.row._id);
                      }}
                   />
                ) : (
@@ -120,7 +125,7 @@ const useColumns = (
                      icon={<CheckBoxOutlineBlankIcon />}
                      label="Mark as done"
                      onClick={() => {
-                        toggleDone(params.row.id);
+                        toggleDone(params.row._id);
                      }}
                   />
                ),
@@ -130,13 +135,13 @@ const useColumns = (
                   label="Edit"
                   disabled={params.row.done}
                   onClick={() => {
-                     router.push(`/todos/edit/${params.row.id}`);
+                     router.push(`/todos/edit/${params.row._id}`);
                   }}
                />,
             ],
          },
       ],
-      [_renderCell, deleteTask, router /*showConfirmationDialog*/, , toggleDone]
+      [_renderCell, deleteTask, router, showConfirmationDialog, toggleDone]
    );
 };
 
@@ -148,7 +153,7 @@ export const useDataGrid = () => {
       setLoading(true);
       try {
          const response = await getAll({
-            id: "5f9a2b9a9d6b2b1b1c9d9c9d",
+            id: "5f9a2b9a9d6b2b1b1c9d9c9d", //todo replace it with logged in user id
             email: "",
             name: "string",
             role: UserRoles.Standard,
@@ -164,45 +169,55 @@ export const useDataGrid = () => {
    const showMessage = useAlertContext();
    const toggleDone = useCallback(
       async (id: string) => {
-         // const api = new Api();
-         // try {
-         //    const { task } = await api.getTodoById(id);
-         //    if (!task) return;
-         //    const { done, _id, dueDate, ...restTask } = task;
-         //    await api.updateTodo({
-         //       _id: _id,
-         //       done: !done,
-         //       dueDate: dueDate ? new Date(dueDate) : undefined,
-         //       ...restTask,
-         //    });
-         // } catch (error) {
-         //    showMessage(
-         //       "An error occurred during updating task status",
-         //       "error"
-         //    );
-         // } finally {
-         //    getTodos();
-         // }
+         try {
+            const task = await getOne(id, {
+               id: "5f9a2b9a9d6b2b1b1c9d9c9d",
+            } as ISessionUser); //todo replace it with logged in user id
+            if (!task) {
+               showMessage("Task not found", "error");
+               return;
+            }
+
+            const { done, _id, dueDate, ...restTask } = task;
+            await updateOne(
+               {
+                  _id: _id,
+                  done: !done,
+                  dueDate: dueDate ? new Date(dueDate) : undefined,
+                  ...restTask,
+               } as ITask,
+               { id: "5f9a2b9a9d6b2b1b1c9d9c9d" } as ISessionUser //todo replace it with logged in user id
+            );
+         } catch (error) {
+            showMessage(
+               "An error occurred during updating task status",
+               "error"
+            );
+         } finally {
+            getTodos();
+         }
       },
       [getTodos, showMessage]
    );
 
-   const deleteTask = useCallback(
+   const _deleteTask = useCallback(
       async (id: string) => {
-         // setLoading(true);
-         // const api = new Api();
-         // try {
-         //    await api.deleteTodoById(id);
-         // } catch (error) {
-         //    showMessage("An error occurred during deleting task", "error");
-         // } finally {
-         //    getTodos();
-         // }
+         setLoading(true);
+         try {
+            await deleteTask(
+               id,
+               { id: "5f9a2b9a9d6b2b1b1c9d9c9d" } as ISessionUser //todo replace it with logged in user id
+            );
+         } catch (error) {
+            showMessage("An error occurred during deleting task", "error");
+         } finally {
+            getTodos();
+         }
       },
       [getTodos, showMessage]
    );
 
-   const columns = useColumns(toggleDone, deleteTask);
+   const columns = useColumns(toggleDone, _deleteTask);
 
    return { todos, loading, error, getTodos, columns };
 };

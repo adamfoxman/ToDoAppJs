@@ -14,14 +14,15 @@ export const addOne = async (task: ITask) => {
 
 export async function updateOne(task: ITask, user: ISessionUser | undefined) {
    const persists = await TaskRepo.persists(task._id);
+   console.log("Persosts:" + persists);
    if (!persists) {
       throw new Error("Task not found");
    }
-
+   console.log(task, user?.id);
    await TaskRepo.updateWithUserCheck(task, user);
 }
 
-export async function _delete(id: string, user: ISessionUser | undefined) {
+export async function deleteTask(id: string, user: ISessionUser | undefined) {
    const persists = await TaskRepo.persists(id);
    if (!persists) {
       throw new Error("Task not found");
