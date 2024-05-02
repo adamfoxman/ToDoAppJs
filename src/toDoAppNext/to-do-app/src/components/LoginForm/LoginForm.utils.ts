@@ -1,16 +1,15 @@
-import { AxiosError } from "axios";
 import { FormikHelpers } from "formik";
-import { useAlertContext } from "shared/contexts/AlertContext";
-import Api from "shared/services/api";
+import { useAlertContext } from "@/shared/contexts/AlertContext";
 import { Schema, object, string } from "yup";
+import { getSession, loginUser } from "@/shared/services/AuthService";
 
 export interface LoginFormValues {
-  email: string;
+  login: string;
   password: string;
 }
 
 export const initialValues: LoginFormValues = {
-  email: "",
+  login: "",
   password: "",
 };
 
@@ -27,20 +26,22 @@ export const useOnSubmit = (loginCallback: () => void) => {
     values: LoginFormValues,
     { resetForm }: FormikHelpers<LoginFormValues>
   ) => {
-    const api = new Api();
-    const { email: login, password } = values;
+    const { login, password } = values;
+
     try {
-      await api.login({
-        email: login,
-        password: password,
+      const session = await getSession();
+      console.log("useOnSubmit", login, password, session);
+
+      const res = await loginUser(login, password).then((res) => {
+        session.userId = res._id;
+        session.username = res.name;
+        session.isLoggedIn = true;
+        loginCallback();
       });
-      loginCallback();
     } catch (error) {
-      const axiosError = error as AxiosError;
-      if (axiosError.response?.status === 401) {
-        showMessage("Invalid credentials", "warning");
-        resetForm();
-      }
+      console.log("useOnSubmit", error);
+
+      showMessage("Invalid credentials", "warning");
     }
   };
 };

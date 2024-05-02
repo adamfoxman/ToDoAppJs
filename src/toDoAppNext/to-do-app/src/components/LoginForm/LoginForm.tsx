@@ -1,19 +1,20 @@
-import { paths } from "config";
+"use client";
+import { paths } from "@/config";
 import { Field, Form, Formik } from "formik";
-import Loader from "components/Loader/Loader";
+import Loader from "@/components/Loader/Loader";
 import { useForm, LoginFormValues } from "./LoginForm.utils";
-import { useNavigate } from "react-router-dom";
 import { Box, Button, Grid } from "@mui/material";
-import FormikTextField from "components/FormikTextField";
+import FormikTextField from "@/components/FormikTextField";
+import { useRouter } from "next/navigation";
 
 const LoginForm = () => {
+  const router = useRouter();
   const onLogin = () => {
-    navigate(paths.main);
-    window.location.reload();
+    router.push(paths.main);
   };
   const formProps = useForm(onLogin);
-  const navigate = useNavigate();
-  const redirectToRegister = () => navigate(paths.auth.register);
+
+  const redirectToRegister = () => router.push(paths.auth.register);
   return (
     <Formik {...formProps}>
       {(props) => (
@@ -27,11 +28,11 @@ const LoginForm = () => {
             <Grid item xs={12}>
               <Field
                 component={FormikTextField<LoginFormValues>}
-                id="email"
-                name="email"
-                label="Email"
+                id="login"
+                name="login"
+                label="Username"
                 formikProps={props}
-                formikPropertyName="email"
+                formikPropertyName="login"
                 fullWidth
               />
             </Grid>
